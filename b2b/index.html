@@ -1,0 +1,1250 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>B2B Growth Marketing Dashboard</title>
+<meta name="description" content="A one-page B2B growth marketing dashboard: funnel, north star, channels, events, campaigns, pipeline and attribution. All data is fictional sample data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --cream:#F9F4EC; --card:#FFFDF8; --ink:#2D2A5E; --ink-soft:#55517E; --ink-mute:#8B87A8;
+    --dark-a:#191820; --dark-b:#242229; --dark-c:#2B2932;
+    --coral:#FF4B33; --purple:#7B68EE; --purple-soft:#EDE9FC; --imported:#6E6996;
+    --teal:#1F9E8A;
+    --f1:#7B68EE; --f2:#6153BD; --f3:#4A4090; --f4:#2D2A5E; --f-other:#CFC9E6;
+    --grey-soft:#EFE9DC; --line:#E7DFD0; --line-dark:rgba(249,244,236,.13);
+    --good:#1E8A5A; --good-bg:#E3F2E9; --warn:#B26A00; --warn-bg:#FCEFD9; --bad:#C03422; --bad-bg:#FBE5E1;
+    --drop:#E8A093; --rag-r:#D99182; --rag-g:#6BA588; --rag-a:#CBA05E;
+    --flag:#B26A00; --flag-bg:#FFF3DC; --beta:#7B68EE; --beta-bg:#EDE9FC;
+    --shadow:0 1px 2px rgba(45,42,94,.06),0 4px 14px rgba(45,42,94,.08);
+    --shadow-lift:0 2px 4px rgba(45,42,94,.09),0 10px 26px rgba(45,42,94,.15);
+    --r:14px;
+    --gl:max(16px,env(safe-area-inset-left,0px)); --gr:max(16px,env(safe-area-inset-right,0px));
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--cream);color:var(--ink);font-family:'Figtree',system-ui,-apple-system,Segoe UI,sans-serif;font-size:15px;line-height:1.45;padding-left:var(--gl);padding-right:var(--gr);padding-block:0 60px}
+  h1,h2,h3,.num{font-family:'Plus Jakarta Sans','Figtree',system-ui,sans-serif}
+  .num{font-variant-numeric:tabular-nums}
+  a{color:inherit}
+
+  header{
+    background:linear-gradient(120deg,var(--dark-a),var(--dark-b) 60%,var(--dark-c));
+    color:var(--cream);margin:0 calc(-1*var(--gr)) 18px calc(-1*var(--gl));
+    padding:18px var(--gr) 14px var(--gl);border-bottom:3px solid var(--coral);
+    display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px;
+  }
+  .demo-banner{margin:0 calc(-1*var(--gr)) 0 calc(-1*var(--gl));background:#FFD68C;color:#2A2118;font:600 13px 'Figtree',sans-serif;text-align:center;padding:7px 16px;line-height:1.4}
+  .demo-banner b{font-weight:800}
+  header h1{font-size:clamp(21px,2.6vw,28px);font-weight:800;letter-spacing:-.02em}
+  header h1 .dot{color:var(--coral)}
+  .filters{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+  .filters button{font:600 13px 'Figtree',sans-serif;color:rgba(249,244,236,.8);background:rgba(249,244,236,.07);border:1px solid var(--line-dark);border-radius:999px;padding:7px 14px;cursor:pointer;transition:all .15s}
+  .filters button:hover{background:rgba(249,244,236,.16);color:#fff;transform:translateY(-1px)}
+  .filters button.on{background:var(--coral);color:#fff;border-color:var(--coral)}
+  .filters button:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
+  .daterange{display:none;width:100%;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px}
+  .daterange.open{display:flex}
+  .daterange label{font:600 11.5px 'Figtree';color:rgba(249,244,236,.75);display:flex;gap:6px;align-items:center}
+  .daterange input{font:600 12px 'Figtree';padding:5px 9px;border-radius:8px;border:1px solid var(--line-dark);background:rgba(249,244,236,.1);color:#FFFDF8;color-scheme:dark}
+  .daterange button{font:700 12px 'Figtree';padding:6px 15px;border-radius:999px;border:none;background:var(--coral);color:#fff;cursor:pointer;transition:filter .15s}
+  .daterange button:hover{filter:brightness(1.1)}
+  .daterange #dErr{font:600 11.5px 'Figtree';color:#FFB4A6}
+  #customNote{display:none;font-size:12px;color:var(--warn);background:var(--warn-bg);border:1px dashed rgba(178,106,0,.4);border-radius:10px;padding:9px 13px;margin-bottom:14px;line-height:1.5}
+  .hdr-meta{width:100%;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;font-size:12.5px;color:rgba(249,244,236,.6)}
+  .hdr-meta .refresh-chip{font:600 11.5px 'Figtree';padding:3px 10px;border-radius:999px;background:rgba(249,244,236,.08);border:1px solid var(--line-dark);cursor:help;color:rgba(249,244,236,.8)}
+  .hdr-meta .refresh-chip:hover{background:rgba(249,244,236,.16)}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;transition:box-shadow .18s,transform .18s;position:relative}
+  .card:hover{box-shadow:var(--shadow-lift);transform:translateY(-2px)}
+  .zone{margin-bottom:18px}
+  .zone-h{display:flex;align-items:baseline;gap:10px;margin:26px 0 10px;flex-wrap:wrap}
+  .zone-h h2{font-size:16px;font-weight:800;letter-spacing:-.01em;border-left:4px solid var(--coral);padding-left:10px}
+  .zone-h .hint{font-size:12.5px;color:var(--ink-mute)}
+  .fullyear-band{background:var(--ink);color:#FFFDF8;font:700 11px 'Figtree';letter-spacing:.07em;text-transform:uppercase;padding:4px 12px;border-radius:999px}
+
+  .scope{font:700 9.5px 'Figtree';letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;white-space:nowrap;cursor:help}
+  .scope.filt{background:var(--purple-soft);color:var(--purple)}
+  .scope.year{background:var(--ink);color:#FFFDF8}
+
+  .rag{display:inline-flex;align-items:center;gap:5px;font:600 11.5px 'Figtree';padding:3px 9px;border-radius:999px;white-space:nowrap}
+  .rag.g{background:var(--good-bg);color:var(--good)} .rag.a{background:var(--warn-bg);color:var(--warn)} .rag.r{background:var(--bad-bg);color:var(--bad)}
+  .rag.n{background:var(--grey-soft);color:var(--ink-mute)}
+  .flagchip{display:inline-flex;align-items:center;gap:4px;background:var(--flag-bg);color:var(--flag);font:600 11px 'Figtree';padding:2px 8px;border-radius:999px;cursor:help;border:1px dashed rgba(178,106,0,.45)}
+  .betachip{display:inline-flex;align-items:center;gap:4px;background:var(--beta-bg);color:var(--beta);font:700 10.5px 'Figtree';padding:2px 8px;border-radius:999px;letter-spacing:.04em}
+  .src{font-size:10.5px;color:var(--ink-mute);letter-spacing:.05em;text-transform:uppercase;font-weight:600}
+  .src a{color:var(--ink-mute);text-decoration:none;border-bottom:1px dotted var(--ink-mute);transition:color .15s,border-color .15s}
+  .src a:hover{color:var(--purple);border-color:var(--purple)}
+  .info{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--purple-soft);color:var(--purple);font:700 11px 'Figtree';cursor:help;vertical-align:-2px;border:1px solid rgba(123,104,238,.35);transition:all .15s}
+  .info:hover{background:var(--purple);color:#fff;transform:scale(1.15)}
+
+  /* zone 1 hero — funnel gets more space */
+  .hero{display:grid;grid-template-columns:minmax(0,2.7fr) minmax(215px,0.95fr);gap:14px}
+  @media(max-width:860px){.hero{grid-template-columns:1fr}}
+  .funnel-card{padding:18px 20px;background:#FCFBF7}
+  .funnel-card .fc-top{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:6px}
+  .funnel-card h2{font-size:17px;font-weight:800}
+  .fstage{cursor:pointer}
+  .fstage rect.bar{transition:transform .18s,filter .18s;transform-box:fill-box;transform-origin:left center}
+  .fstage:hover rect.bar{filter:brightness(1.16) saturate(1.08);transform:scaleX(1.03) scaleY(1.08)}
+  .northstar{display:flex;flex-direction:column;gap:10px;justify-content:center;background:linear-gradient(150deg,var(--dark-b),var(--dark-c));color:var(--cream);border:none;border-top:3px solid var(--purple);padding:18px 18px 16px}
+  .northstar .cmp{font-size:11.5px;color:rgba(249,244,236,.75)}
+  .northstar .flagchip{background:rgba(255,243,220,.1);border-color:rgba(255,214,140,.35);color:#FFD68C}
+  .ns-gaugewrap{display:flex;justify-content:center;margin:6px 0 2px}
+  #nsGauge{cursor:pointer;transition:filter .4s,transform .4s}
+  #nsGauge:hover{filter:drop-shadow(0 0 16px rgba(123,104,238,.55));transform:scale(1.03)}
+  .ns-chips{display:flex;gap:6px;flex-wrap:wrap}
+  .ns-chip{font:600 10.5px 'Figtree';padding:3px 8px;border-radius:999px;background:rgba(249,244,236,.09);border:1px solid var(--line-dark);color:rgba(249,244,236,.85);cursor:help}
+  .ns-chip:hover{background:rgba(249,244,236,.18)}
+
+  .grid3{display:grid;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));gap:14px}
+  .grid5{display:grid;grid-template-columns:repeat(var(--cols,5),minmax(0,1fr));gap:14px}
+  @media(max-width:1050px){.grid5{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  @media(max-width:760px){.grid3,.grid5{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.grid3,.grid5{grid-template-columns:1fr}}
+  .tile .t-h{display:flex;align-items:center;gap:7px;font-weight:700;font-size:13.5px}
+  .tile .t-h .sp{margin-left:auto;display:flex;gap:6px;align-items:center}
+  .tile .val{font-family:'Plus Jakarta Sans';font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 2px}
+  .tile .val small{font-size:14px;color:var(--ink-mute);font-weight:700}
+  .tile .cmp{font-size:12.5px;color:var(--ink-soft)}
+  .bar-track{height:6px;border-radius:99px;background:var(--grey-soft);margin:9px 0 3px;overflow:visible;position:relative}
+  .bar-fill{height:100%;border-radius:99px}
+  .bar-elapsed{position:absolute;top:-6px;bottom:-6px;width:4px;border-radius:2px;background:var(--ink);opacity:.85;cursor:help;box-shadow:0 0 0 2px rgba(249,244,236,.9)}
+  .bar-fill.tbc{background:repeating-linear-gradient(45deg,#C9C2DE,#C9C2DE 5px,#DDD8EC 5px,#DDD8EC 10px);width:100%!important}
+  .stale{filter:grayscale(.55);opacity:.8}
+
+  .kpi{position:relative;overflow:hidden;background:linear-gradient(160deg,#FFFDF8 55%,#F0EAFE);border-top:3px solid var(--purple)}
+  .kpi::after{content:'';position:absolute;top:-60%;bottom:-60%;left:-30%;width:34%;pointer-events:none;
+    background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.03) 40%,rgba(255,255,255,.28) 50%,rgba(255,255,255,.03) 60%,transparent 75%);
+    transform:rotate(8deg) translateX(-160%);animation:glare 10s cubic-bezier(.4,0,.2,1) infinite}
+  .kpi:nth-child(2)::after{animation-delay:.7s}
+  .kpi:nth-child(3)::after{animation-delay:1.4s}
+  @keyframes glare{0%{transform:rotate(8deg) translateX(-160%)}22%,100%{transform:rotate(8deg) translateX(480%)}}
+
+  .chan{border-top:3px solid var(--acc)}
+  .chan.c-li{--acc:#7B68EE;background:linear-gradient(165deg,#FFFDF8 55%,#EFEBFF)}
+  .chan.c-se{--acc:#1F9E8A;background:linear-gradient(165deg,#FFFDF8 55%,#E7F5F1)}
+  .chan.c-bc{--acc:#FF4B33;background:linear-gradient(165deg,#FFFDF8 55%,#FFEEEA)}
+  .chan.c-ev{--acc:#D99000;background:linear-gradient(165deg,#FFFDF8 55%,#FFF4DC)}
+  .chan.c-co{--acc:#6E6996;background:linear-gradient(165deg,#FFFDF8 55%,#F0EDF8)}
+
+  .charts{display:grid;grid-template-columns:1.15fr 1fr;gap:14px}
+  @media(max-width:960px){.charts{grid-template-columns:1fr}}
+  .chart-card h3{font-size:14px;font-weight:800;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .chart-card .legend{display:flex;gap:14px;font-size:12px;color:var(--ink-soft);margin:6px 0 4px;flex-wrap:wrap}
+  .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  .chart-wrap{overflow-x:auto}
+  .mbar rect{transition:transform .16s,filter .16s;transform-box:fill-box;transform-origin:center bottom}
+  .mbar{cursor:pointer}
+  .mbar:hover rect{filter:brightness(1.15) saturate(1.15);transform:scaleY(1.05) scaleX(1.06)}
+  .mbar:hover text{font-weight:800}
+
+  .ev-top{font-family:'Plus Jakarta Sans';font-size:24px;font-weight:800;letter-spacing:-.02em;margin:2px 0 6px}
+  .ev-top small{font-size:12px;color:var(--ink-mute);font-weight:600;font-family:'Figtree'}
+  .pie-wrap{display:grid;grid-template-columns:auto minmax(300px,470px);gap:44px;align-items:center;margin-top:14px;justify-content:center}
+  @media(max-width:820px){.pie-wrap{grid-template-columns:1fr;gap:18px;justify-items:center}}
+  .pie-legend{flex:0 1 auto;min-width:300px;max-width:470px;display:flex;flex-direction:column;gap:1px}
+  .pie-li{display:grid;grid-template-columns:20px 12px minmax(0,1fr) 30px 40px;gap:9px;align-items:center;font-size:13.5px;padding:7px 9px;border-radius:8px;transition:background .15s;cursor:help;border-bottom:1px dashed var(--line)}
+  .pie-li:last-child{border-bottom:none}
+  .pie-li:hover{background:var(--purple-soft)}
+  .pie-li .rk{font:700 11px 'Figtree';color:var(--ink-mute);text-align:center}
+  .pie-li .rk.medal{font-size:14px}
+  .pie-li .dot{width:12px;height:12px;border-radius:3px}
+  .pie-li .lb{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pie-li .n{font-weight:700;font-variant-numeric:tabular-nums;font-family:'Plus Jakarta Sans';text-align:right}
+  .pie-li .pc{font-size:12px;color:var(--ink-mute);font-variant-numeric:tabular-nums;text-align:right}
+  .pie-li.top1{background:linear-gradient(90deg,#FFF7E0,transparent)}
+  .pie-seg{transition:transform .18s,opacity .18s;transform-origin:center;cursor:pointer}
+  .pie-seg:hover{transform:scale(1.045);opacity:.92}
+  table.lb{min-width:660px}
+  .lb td{vertical-align:middle}
+  .lb .lb-nm{min-width:250px}
+  .lb .lb-rank{font-size:16px;text-align:center;width:38px}
+  .lb .lb-nm{font-weight:700;font-size:13.5px}
+  .lb .lb-when{color:var(--ink-mute);white-space:nowrap}
+  .lb .lb-num{text-align:right;font-family:'Plus Jakarta Sans';font-weight:700;font-variant-numeric:tabular-nums}
+  .lb .lb-rate{text-align:right;font-family:'Plus Jakarta Sans';font-weight:700;font-size:14.5px;white-space:nowrap}
+  .lb .lb-held{text-align:right;font-family:'Plus Jakarta Sans';font-weight:800;font-size:17px;background:var(--purple-soft);border-left:3px solid var(--purple);white-space:nowrap}
+  .lb th.lb-rate-h{color:var(--purple)}
+  .lb th.sk{cursor:pointer;user-select:none;white-space:nowrap;transition:color .12s}
+  .lb th.sk:hover{color:var(--purple);text-decoration:underline dotted}
+  .lb th.sk.on{color:var(--purple)}
+  .lb th .car{font-size:9px;margin-left:3px;opacity:.85}
+  .lb th.sk:not(.on) .car{opacity:.22}
+  .lb .ev-tag{display:inline-block;margin-left:6px;padding:0 5px 1px;border-radius:999px;font-size:7.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;vertical-align:2px;opacity:.9}
+  .lb .ev-tag.t-owned{background:#FFEFC4;color:#7E5A00;border:1px solid #E6CB85}
+  .lb .ev-tag.t-sponsored{background:#E1EEFF;color:#2A5C90;border:1px solid #B6D3F1}
+  .lb td.lb-nm{border-left:4px solid transparent}
+  .lb tr.b-owned td.lb-nm{border-left-color:#E3B341}
+  .lb tr.b-sponsored td.lb-nm{border-left-color:#5B92CE}
+  .lb .lb-beat{color:var(--good);font-weight:800}
+  .lb tbody tr{cursor:help}
+  .lb tr.lb-first td{background:linear-gradient(90deg,#F3F0FE,#E7E1FC);border-top:2px solid var(--purple);border-bottom:2px solid var(--purple)}
+  .lb tr.lb-first td:first-child{border-left:2px solid var(--purple);border-radius:12px 0 0 12px}
+  .lb tr.lb-first td:last-child{border-right:2px solid var(--purple);border-radius:0 12px 12px 0}
+  .lb tr.lb-first:hover td{background:#E7E1FC}
+  .lb tr.lb-first td.lb-held{background:#DDD4FA;border-left-color:#5B49C9}
+  .lb tr.lb-first .lb-nm{font-size:13.5px}
+  .lb-plaque{display:inline-block;font:800 9.5px 'Figtree';letter-spacing:.05em;text-transform:uppercase;background:#8A6400;color:#FFF1CC;padding:2px 8px;border-radius:6px;vertical-align:1px;margin-left:4px}
+  .lb-pre{display:inline-block;font:700 8px 'Figtree';background:var(--grey-soft);color:var(--ink-soft);padding:1px 5px;border-radius:5px;vertical-align:2px;margin-left:5px;opacity:.85}
+  .lb tr.lb-untracked td{color:var(--ink-mute);background:repeating-linear-gradient(45deg,#FBF8F1,#FBF8F1 6px,#F5F0E4 6px,#F5F0E4 12px)}
+  .lb tr.lb-untracked .lb-nm{font-weight:600}
+
+  .attr-tabs{display:flex;gap:6px;margin:8px 0 4px}
+  .attr-tabs button{font:700 12px 'Figtree';padding:5px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink-soft);cursor:pointer;transition:all .15s}
+  .attr-tabs button:hover{border-color:var(--purple);color:var(--ink)}
+  .attr-tabs button.on{background:var(--f4);color:#FFFDF8;border-color:var(--f4)}
+  .attr-row{display:grid;grid-template-columns:220px 1fr 58px;gap:10px;align-items:center;font-size:12.5px;padding:4px 4px;border-radius:8px;transition:background .15s}
+  .attr-row:hover{background:var(--purple-soft)}
+  @media(max-width:700px){.attr-row{grid-template-columns:130px 1fr 52px}}
+  .attr-row .nm{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .attr-row .b{height:11px;border-radius:5px;min-width:2px;background:var(--purple);transition:transform .16s,filter .16s;transform-origin:left center;display:block}
+  .attr-row:hover .b{transform:scaleY(1.3);filter:brightness(1.12)}
+  .attr-row .v{text-align:right;font-weight:700;font-size:11.5px;color:var(--ink-soft);white-space:nowrap}
+
+  .camp-row{display:grid;grid-template-columns:minmax(0,275px) 1fr 130px;gap:12px;align-items:center;font-size:13px;padding:8px 6px;border-bottom:1px dashed var(--line);border-radius:8px;transition:background .15s}
+  .camp-row:hover{background:var(--purple-soft)}
+  .camp-row:last-of-type{border-bottom:none}
+  @media(max-width:700px){.camp-row{grid-template-columns:minmax(0,170px) 1fr 100px}}
+  .camp-row .nm{font-weight:700;white-space:nowrap;cursor:help;display:flex;align-items:center;min-width:0}
+  .camp-row .nm-t{overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .camp-row .nm a{color:var(--purple);text-decoration:underline dotted}
+  .metric-chip{display:inline-block;font:800 9.5px 'Figtree';letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:6px;margin:0 0 0 12px;flex:0 0 auto}
+  .metric-chip.sql{background:#FBE5E1;color:#C03422}
+  .metric-chip.mql{background:var(--purple-soft);color:var(--purple)}
+  .metric-chip.gbp{background:#E3F2E9;color:#1E8A5A}
+  .metric-chip.other{background:var(--grey-soft);color:var(--ink-soft)}
+  .metric-chip.meet{background:#FFF4DC;color:#8A6400}
+  .camp-row .track{height:18px;background:var(--grey-soft);border-radius:6px;position:relative;overflow:hidden}
+  .camp-row .fill{position:absolute;inset:0 auto 0 0;border-radius:6px;background:linear-gradient(90deg,var(--purple),#9A8BF5);min-width:3px;transition:filter .15s}
+  .camp-row:hover .fill{filter:brightness(1.12)}
+  .camp-row .fill.full{background:linear-gradient(90deg,var(--good),#3BAF7E)}
+  .camp-row .fill.nogoal{background:repeating-linear-gradient(45deg,#C9C2DE,#C9C2DE 6px,#D8D2EA 6px,#D8D2EA 12px)}
+  .camp-row .pcttext{position:absolute;right:8px;top:0;bottom:0;display:flex;align-items:center;font:700 11px 'Figtree';color:var(--ink-soft)}
+  .camp-row .v{text-align:right;font-weight:700;white-space:nowrap}
+  .camp-row .v small{display:block;font-weight:500;color:var(--ink-mute)}
+  .camp-row.camp-hit{background:linear-gradient(90deg,#EAFBF2,#F4FBF7);box-shadow:inset 3px 0 0 var(--good)}
+  .camp-row.camp-hit:hover{background:#DCF5EA}
+  .camp-row.camp-hit .nm{color:#0E6B4F}
+  .camp-hit-badge{position:absolute;left:7px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:5px;font:800 9px 'Figtree';letter-spacing:.06em;text-transform:uppercase;color:#0B5A42;background:rgba(255,255,255,.9);padding:3px 8px;border-radius:999px;box-shadow:0 1px 3px rgba(45,42,94,.18)}
+  .camp-row.camp-ended{opacity:.62}
+  .camp-row.camp-ended .fill{background:linear-gradient(90deg,#A7A2BC,#BDB8CE)}
+  .camp-row.camp-ended:hover{opacity:1;background:var(--grey-soft)}
+  .camp-closed{position:absolute;left:7px;top:50%;transform:translateY(-50%);display:flex;align-items:center;font:800 8.5px 'Figtree';letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);background:rgba(255,255,255,.75);padding:2px 7px;border-radius:999px}
+  .camp-sep{display:flex;align-items:center;gap:10px;margin:16px 0 4px;font:700 10px 'Figtree';letter-spacing:.07em;text-transform:uppercase;color:var(--ink-mute);cursor:help}
+  .camp-sep::after{content:'';flex:1;height:1px;background:var(--line)}
+
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{font:600 11px 'Figtree';text-transform:uppercase;letter-spacing:.06em;color:var(--ink-mute);text-align:left;padding:7px 10px;border-bottom:1.5px solid var(--line);cursor:pointer;user-select:none;white-space:nowrap}
+  th:hover{color:var(--ink)}
+  th .arr{color:var(--coral);font-weight:800}
+  td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  tbody tr{transition:background .12s}
+  tbody tr:hover td{background:var(--purple-soft)}
+  td.money{font-family:'Plus Jakarta Sans';font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+  td a{color:var(--purple);text-decoration:none;font-weight:700}
+  td a:hover{text-decoration:underline}
+  .mb-tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+  .mb-tools input{font:500 13px 'Figtree';padding:7px 12px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink);min-width:220px}
+  .mb-tools input:focus{outline:2px solid var(--purple);border-color:var(--purple)}
+  .tbl-wrap{overflow-x:auto}
+  #moneyBoard th{padding:10px 14px}
+  #moneyBoard td{padding:13px 14px;line-height:1.45}
+  .tile .t-nm{min-width:0;line-height:1.3}
+  .tile .t-hint{display:block;font-weight:500;font-size:11.5px;color:var(--ink-mute);margin-top:1px}
+  .showmore{display:block;margin:12px auto 2px;font:700 12.5px 'Figtree';color:var(--purple);background:var(--purple-soft);border:1px solid rgba(123,104,238,.35);border-radius:999px;padding:7px 18px;cursor:pointer;transition:all .15s}
+  .showmore:hover{background:var(--purple);color:#fff;transform:translateY(-1px)}
+  .why-edit{font:700 11px 'Figtree';width:20px;height:20px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink-mute);cursor:pointer;vertical-align:-2px;transition:all .15s;margin-left:4px}
+  .why-edit:hover{background:var(--purple);border-color:var(--purple);color:#fff;transform:scale(1.12)}
+  .pendwhy{color:var(--ink);font-weight:600;border-bottom:1px dotted rgba(123,104,238,.75);cursor:help}
+  .mdl-bk{position:fixed;inset:0;background:rgba(20,19,19,.42);display:flex;align-items:center;justify-content:center;z-index:9999;padding:18px}
+  .mdl{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.28);width:min(460px,100%);padding:20px 20px 16px}
+  .mdl h4{margin:0 0 6px;font:800 16px 'Plus Jakarta Sans';color:var(--ink)}
+  .mdl p{margin:0 0 12px;font-size:12px;line-height:1.55;color:var(--ink-mute)}
+  .mdl input{width:100%;box-sizing:border-box;font:600 14px 'Figtree';padding:10px 12px;border:1.5px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink)}
+  .mdl input:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px var(--purple-soft)}
+  .mdl-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+  .mdl-btns button{font:700 12.5px 'Figtree';padding:9px 16px;border-radius:9px;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink-mute)}
+  .mdl-btns button.pri{background:var(--purple);border-color:var(--purple);color:#fff}
+  .mdl-btns button:hover{filter:brightness(1.06)}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#2B2932;color:#fff;font:600 12.5px 'Figtree';padding:11px 18px;border-radius:10px;z-index:10000;box-shadow:0 8px 26px rgba(0,0,0,.3);max-width:min(460px,90vw)}
+  #askLog{display:flex;flex-direction:column;gap:10px;margin-top:12px;max-height:460px;overflow-y:auto}
+  #askLog:empty{display:none}
+  .ask-q,.ask-a{font-size:13.5px;line-height:1.55;border-radius:12px;padding:10px 14px;max-width:88%;white-space:pre-wrap}
+  .ask-q{align-self:flex-end;background:var(--f4);color:#FFFDF8;border-bottom-right-radius:4px}
+  .ask-a{align-self:flex-start;background:var(--purple-soft);color:var(--ink);border-bottom-left-radius:4px}
+  .ask-a.thinking{color:var(--ink-mute);font-style:italic}
+  .set-goal{display:inline-block;font:700 10px 'Figtree';letter-spacing:.03em;text-transform:uppercase;padding:3px 9px;border-radius:999px;border:1px dashed var(--warn);background:var(--warn-bg);color:var(--warn);cursor:help;white-space:nowrap}
+
+  .recs-panel{background:linear-gradient(150deg,var(--dark-a),var(--dark-b) 60%,var(--dark-c));color:var(--cream);border:none;border-radius:18px;padding:22px 24px;border-top:3px solid var(--coral)}
+  .recs-panel h2{font-size:17px;font-weight:800;color:#fff;display:flex;gap:9px;align-items:center}
+  .recs-panel .lede{font-size:12.5px;color:rgba(249,244,236,.55);margin:3px 0 14px}
+  .pace{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+  .pace .p{background:rgba(249,244,236,.06);border:1px solid var(--line-dark);border-radius:12px;padding:10px 15px;flex:1;min-width:170px;transition:background .15s,transform .15s}
+  .pace .p:hover{background:rgba(249,244,236,.12);transform:translateY(-2px)}
+  .pace .p b{font-family:'Plus Jakarta Sans';font-size:20px;display:block;letter-spacing:-.02em;color:#fff}
+  .pace .p span{font-size:11.5px;color:rgba(249,244,236,.6)}
+  .rec{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:14px 0;border-top:1px dashed var(--line-dark)}
+  .rec .ic{width:44px;height:44px;border-radius:11px;background:rgba(249,244,236,.08);display:flex;align-items:center;justify-content:center;font-size:21px;transition:transform .15s}
+  .rec:hover .ic{transform:scale(1.12)}
+  .rec h3{font-size:14.5px;font-weight:800;color:#fff;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .rec p{font-size:13px;color:rgba(249,244,236,.75);margin-top:4px}
+  .rec b{color:#fff;font-weight:700}
+  .badge{font:800 10px 'Figtree';letter-spacing:.06em;padding:3px 8px;border-radius:6px;text-transform:uppercase}
+  .badge.win{background:#1E8A5A;color:#EAFBF2} .badge.leak{background:#8C2E1F;color:#FFE3DC}
+  .badge.check{background:#8A6400;color:#FFF1CC} .badge.test{background:#4B3E9E;color:#E8E2FF}
+
+  .bj{display:inline-block;font-style:normal;line-height:1}.bj::before{content:'🏆'}
+  .bj-lg{width:1.5em;height:1.5em;vertical-align:-.35em}
+  #tip{position:fixed;z-index:50;pointer-events:none;background:var(--dark-a);color:#FFFDF8;font:500 12.5px 'Figtree';padding:9px 12px;border-radius:9px;box-shadow:var(--shadow-lift);opacity:0;transition:opacity .12s;max-width:330px}
+  #tip b{font-family:'Plus Jakarta Sans'}
+  #tip .tt-sub{opacity:.75;font-size:11.5px}
+
+  footer{margin-top:26px;font-size:11.5px;color:var(--ink-mute);line-height:1.7;border-top:1px solid var(--line);padding-top:14px}
+  footer a{color:var(--purple)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.kpi::after{display:none}}
+  /* stage drill-down */
+  .fstage{cursor:pointer}
+  .fstage:hover .bar{filter:brightness(1.06)}
+  .drill{position:fixed;inset:0;background:rgba(24,21,17,.42);display:flex;align-items:center;justify-content:center;z-index:120;padding:20px}
+  .drill-box{background:var(--paper,#FCFBF7);width:min(660px,100%);max-height:84vh;border-radius:14px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 18px 60px rgba(0,0,0,.28);border:1px solid var(--line)}
+  .drill-head{display:flex;gap:12px;align-items:flex-start;padding:16px 18px 12px;border-bottom:1px solid var(--line)}
+  .drill-head h3{font:800 16px 'Plus Jakarta Sans';margin:0 0 3px}
+  .drill-head p{margin:0;font-size:11.5px;line-height:1.5;color:var(--ink-mute)}
+  .drill-x{margin-left:auto;background:none;border:0;font-size:15px;cursor:pointer;color:var(--ink-mute);padding:2px 4px}
+  .drill-x:hover{color:var(--ink)}
+  .drill-find{margin:12px 18px 0;padding:8px 11px;font:13px 'Figtree';border:1px solid var(--line);border-radius:8px;background:#FFF;color:var(--ink)}
+  .drill-list{overflow-y:auto;padding:8px 10px 4px;margin:4px 8px 0}
+  .drill-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;text-decoration:none;color:inherit;border-bottom:1px solid var(--line)}
+  .drill-row:hover{background:var(--purple-soft,#F3F0FE)}
+  .drill-who{display:flex;flex-direction:column;min-width:0;flex:1}
+  .drill-who b{font:700 13px 'Figtree';white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .drill-who small{font-size:11px;color:var(--ink-mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .drill-when{display:flex;flex-direction:column;align-items:flex-end;font:600 11.5px 'Figtree';white-space:nowrap}
+  .drill-when small{font-size:10px;font-weight:400;color:var(--ink-mute)}
+  .drill-go{color:var(--ink-mute);font-size:12px}
+  .drill-amt{display:inline-block;margin-left:7px;padding:1px 7px;border-radius:999px;background:var(--purple-soft,#F3F0FE);color:var(--purple,#7B68EE);font:800 11px 'Figtree';vertical-align:1px}
+  .drill-foot{padding:10px 18px 14px;font-size:10.5px;color:var(--ink-mute);border-top:1px solid var(--line)}
+  .drill-empty{padding:22px 18px;font-size:13px;line-height:1.6}
+  @media(max-width:560px){.drill{padding:0}.drill-box{max-height:100vh;border-radius:0}}
+  /* portfolio additions */
+  .hint-click{font-size:11.5px;color:var(--ink-mute)}
+  @media(max-width:760px){.how-grid{grid-template-columns:1fr}}
+  .drill-row{cursor:default}
+  .lb-dash{color:var(--ink-mute);font-weight:600;font-size:12px}
+  .cpm-over{color:var(--bad)} .cpm-under{color:var(--good)}
+  @media(max-width:560px){.funnel-card{padding:14px 12px}.recs-panel{padding:18px 16px}}
+
+  .hdr-meta a{color:rgba(249,244,236,.85)}
+</style>
+</head>
+<body>
+
+<div class="demo-banner" role="note">🧪 <b>Demo dashboard: this is all fake data.</b> Every name, company and number is made up.</div>
+<header>
+  <div><h1>B2B Growth Marketing Dashboard<span class="dot">.</span></h1></div>
+  <nav class="filters" id="filters" aria-label="Time period"></nav>
+  <div class="daterange" id="dateRange">
+    <label>From <input type="date" id="dFrom" min="2026-01-01" max="2026-09-25" value="2026-08-01"></label>
+    <label>To <input type="date" id="dTo" min="2026-01-01" max="2026-09-25" value="2026-09-10"></label>
+    <button id="dApply" type="button">Apply</button>
+    <span id="dErr"></span>
+  </div>
+  <div class="hdr-meta">
+    <span id="periodNote"></span>
+    <span style="margin-left:auto">fictional sample data · as of 25 Sep 2026</span>
+  </div>
+</header>
+
+<div id="customNote"><b>Custom range.</b> The funnel and the MQL / meetings KPI tiles are summed day by day from the daily record, so they are exact for any dates you pick. Three things behave differently: targets are <b>pro-rated by the number of days</b> (the presets use full-period targets), the <b>qualified-demo tile and the channel tiles read “—”</b> because those sources are stored per preset period, and the <b>Channel 3 and Channel 5 tiles keep their full-year figures</b>. Everything below “Supporting charts” ignores the date range.</div>
+
+<!-- ZONE 1 ▸ hero funnel + north star -->
+<section class="zone hero">
+  <div class="card funnel-card">
+    <div class="fc-top">
+      <h2>The funnel</h2>
+      <span class="scope filt" data-tip="Changes with the date buttons above.">follows filter</span>
+      <span class="hint-click">click any bar for the names</span>
+      <span class="src" style="margin-left:auto">CRM</span>
+    </div>
+    <div id="funnelHost"></div>
+  </div>
+  <div class="card northstar">
+    <div style="display:flex;gap:8px;align-items:center;font-weight:700;font-size:12.5px"><span style="font-size:20px;line-height:1;filter:drop-shadow(0 0 8px rgba(255,214,140,.55))">⭐</span> North star — Pipeline generated from MQLs</div>
+    <div class="ns-gaugewrap">
+      <svg id="nsGauge" width="100%" viewBox="0 0 264 162" style="max-width:330px" role="img" aria-label="Pipeline generated from MQLs in the selected period, against the target">
+        <defs><linearGradient id="nsGrad" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0" stop-color="#7B68EE"/><stop offset="1" stop-color="#FF4B33"/>
+        </linearGradient></defs>
+        <path d="M 37 128 A 95 95 0 0 1 227 128" fill="none" stroke="rgba(249,244,236,.13)" stroke-width="17" stroke-linecap="round"/>
+        <path id="nsArc" d="M 37 128 A 95 95 0 0 1 227 128" fill="none" stroke="url(#nsGrad)" stroke-width="17" stroke-linecap="round"
+          stroke-dasharray="200 400" stroke-dashoffset="200"/>
+        <text id="nsNum" x="132" y="107" text-anchor="middle" font-family="Plus Jakarta Sans" font-size="34" font-weight="800" fill="#fff">£0K</text>
+        <text id="nsWhen" x="132" y="126" text-anchor="middle" font-family="Figtree" font-size="11.5" font-weight="700" fill="#FFD68C">—</text>
+        <text x="37" y="156" text-anchor="middle" font-family="Figtree" font-size="11" fill="rgba(249,244,236,.45)">£0</text>
+        <text id="nsGoal" x="227" y="156" text-anchor="middle" font-family="Plus Jakarta Sans" font-size="11.5" font-weight="800" fill="#FFD68C">£475K goal</text>
+      </svg>
+    </div>
+    <div class="cmp"><b class="num" id="nsCount">—</b> of new pipeline from deals whose contacts were MQLs first: <span id="nsWay">—</span> of the <span id="nsTarget">—</span> target. <span style="color:rgba(249,244,236,.45)" id="nsAsOf"></span></div>
+    <div class="ns-chips">
+      <span class="ns-chip" data-tip="Rolling 12 months (Oct 2025 – Sep 2026): £5.42M of pipeline from MQL-sourced deals, an average of £452K a month.">12-mo rolling · £5.42M</span>
+      <span class="ns-chip" id="nsChip" data-tip="Target: £475K of new pipeline a month from MQL-sourced deals. It scales with the date buttons: a quarter is £1.43M, the year £5.7M.">target £475K / month</span>
+      <span class="flagchip" data-flag="Counts New Business deal value created in the period where the contact was an MQL before the deal. Deals with no MQL stamp (the trade-fair imports) are flagged on the Money Board and left out once the CRM stamps them properly.">⚠ β</span>
+    </div>
+  </div>
+</section>
+
+<!-- ZONE 2 ▸ primary KPIs -->
+<div class="zone-h"><h2>Primary KPIs</h2><span class="scope filt" data-tip="Changes with the date buttons above.">follows filter</span></div>
+<section class="zone grid3" id="kpiRow"></section>
+
+<!-- ZONE 3 ▸ channels -->
+<div class="zone-h"><h2>Channels</h2></div>
+<section class="zone grid5" id="chanRow"></section>
+
+<!-- ═══════ FULL-YEAR BAND ═══════ -->
+<div class="zone-h" style="margin-top:34px"><h2>Supporting charts</h2><span class="hint">each card states the range it measures</span></div>
+<section class="zone card chart-card">
+  <h3>📊 MQLs by month <span class="scope year" data-tip="The whole of 2026 (Jan → today). The date buttons above don't change this chart.">2026</span><span class="src" style="margin-left:auto">CRM</span></h3>
+  <div class="legend">
+    <span data-tip="People who came to you: website forms, report downloads, demo requests, event sign-ups, paid and organic." style="cursor:help"><span class="sw" style="background:var(--purple)"></span>Inbound</span>
+    <span data-tip="People you went out to: prospecting, imported lists, event badge scans and partner lists." style="cursor:help"><span class="sw" style="background:var(--teal)"></span>Outbound</span>
+    <span><span class="sw" style="background:var(--coral);height:3px;border-radius:2px;vertical-align:2px"></span>Target (150/mo)</span>
+    <span style="color:var(--ink-mute);cursor:help" data-tip="The last bar is the month we are in, so it is only part-full and keeps growing until the month ends.">▸ dashed = month still running</span>
+  </div>
+  <div class="chart-wrap" id="mqlChart"></div>
+</section>
+
+<!-- campaigns -->
+<section class="zone card chart-card">
+  <h3>🎯 Campaigns vs their own goal
+    <span class="info" data-flag="Every campaign is an experiment: define success before it starts, then measure the result.<br><br>Each bar fills toward that campaign’s own goal. Full + green + 🏆 = goal hit. The chip beside each name says exactly what is counted (MQLs, SQLs, £ pipeline, meetings or qualified demos). Finished campaigns drop to the bottom with final numbers.">i</span>
+    <span class="scope year" data-tip="The whole of 2026 / campaign lifetime. The date buttons above don't change this section.">2026</span>
+    <span class="src" style="margin-left:auto">CRM + campaign tick list</span></h3>
+  <div id="campChart" style="margin-top:6px"></div>
+</section>
+
+<!-- events -->
+<section class="zone card chart-card">
+  <h3>🎪 Events → MQLs → meetings
+    <span class="info" data-flag="One rule for every row: the cohort is contacts whose first touch was that event’s page (or its imported list), counted only if they became an MQL in 2026. A meeting counts only if it is dated ON OR AFTER their MQL date, so meetings with existing clients, or before someone qualified, never inflate a row. Events mature at 90 days. Rows are not additive. Hover a row for the detail.">i</span>
+    <span class="scope year" data-tip="The whole of 2026. The date buttons above don't change this chart.">2026</span>
+    <span class="src" style="margin-left:auto">CRM</span></h3>
+  <div class="ev-top num" id="evTop"></div>
+  <div id="evChart" style="margin-top:8px"></div>
+</section>
+
+<!-- money board -->
+<div class="zone-h"><h2>💸 Money Board — MQLs that became SQLs</h2><span class="scope year" data-tip="All of 2026. The date buttons above don't change this board.">2026</span></div>
+<section class="zone card">
+  <div class="mb-tools">
+    <input id="mbFilter" type="search" placeholder="Filter by name, company, touch…" aria-label="Filter money board">
+    <span style="font-size:11.5px;color:var(--ink-mute)" id="mbCount"></span>
+  </div>
+  <div class="tbl-wrap" id="moneyBoard"></div>
+</section>
+
+<section class="zone card chart-card">
+  <h3>🥧 Money Board breakdown — the conversion each contact submitted
+    <span class="info" data-flag="Same people as the Money Board table above: every 2026 contact who reached SQL having been an MQL first, plus the flagged marketing-sourced rows. One contact = one slice, so it counts contacts, not deal value.<br><br>FIRST TOUCH groups each contact by the first form they ever submitted. LATEST TOUCH groups them by the most recent one, closest to going sales-qualified.">i</span>
+    <span class="scope year" data-tip="All of 2026. The date buttons above don't change this chart.">2026</span>
+    <span class="src" style="margin-left:auto">CRM</span></h3>
+  <div id="convPie"></div>
+</section>
+
+<!-- attribution -->
+<div class="zone-h" style="margin-top:34px"><h2>Attribution</h2></div>
+<section class="zone card chart-card">
+  <h3>🧪 Contact create attribution — U-shaped, credited by campaign
+    <span class="info" data-flag="<b>Where it comes from.</b> This is typically your CRM’s attribution report, linked straight from the CRM (in HubSpot: Reports → Attribution → Contact create attribution, U-shaped model, grouped by campaign).<br><br><b>How the credit splits.</b> Every contact carries exactly 1 point when they qualify: 40% to their FIRST touch, 40% to the touch that CONVERTED them and 20% across everything in between. Example: someone downloads a report, later clicks a paid media ad, then books a demo and becomes an MQL. The report gets 0.4, the demo form 0.4, the ad 0.2. One-touch contacts give the full 1.0 to that touch, which is why campaigns show fractions.">i</span>
+    <span class="scope year" data-tip="2026 so far. The date buttons above don't change this chart.">2026</span>
+    <span class="src" style="margin-left:auto">CRM</span></h3>
+  <div class="attr-tabs" id="attrTabs">
+    <button data-v="mql" class="on">MQLs</button>
+    <button data-v="sql">SQLs</button>
+    <button data-v="cust">Customers</button>
+  </div>
+  <div id="attrChart" style="margin-top:6px"></div>
+  <div id="attrCaption" style="font-size:11.5px;color:var(--ink-mute);margin-top:8px;cursor:help"></div>
+</section>
+
+<!-- recommendations -->
+<section class="zone recs-panel">
+  <h2>💡 Top 3 insights</h2>
+  <div class="lede">Ranked by how much each one moves the goals. Written for the sample data.</div>
+  <div class="rec"><div class="ic">📱</div><div>
+    <h3>Channel 1 (paid media) is the engine <span class="badge win">Biggest win</span></h3>
+    <p>Paid media was the first touch for <b>46 of the 121 SQLs</b> and the latest touch for <b>42</b>, more than any other channel. September has already beaten its goal (<b>31 leads vs 30</b>) at £239 a lead. Move Event B’s budget (£2,909 a meeting) into it for Q4.</p>
+  </div></div>
+  <div class="rec"><div class="ic">🛑</div><div>
+    <h3>MQL → SQL is the leak <span class="badge leak">Leaking</span></h3>
+    <p>Volume is on plan: <b>150 MQLs by 25 Sept</b>. Conversion isn’t: <b>8.0% of MQLs became SQLs</b> this year, against a 10% target. Route every new MQL to a named rep within 48 hours.</p>
+  </div></div>
+  <div class="rec"><div class="ic">📇</div><div>
+    <h3>86 warm names from Channel 5 (events) <span class="badge win">Warm list</span></h3>
+    <p>The Event E list (40) and the Event D RSVPs (46) landed in September, with only <b>18 meetings booked</b> so far. Get sales through the list this week while it’s still warm.</p>
+  </div></div>
+</section>
+
+<footer>All names, companies and numbers are fictional sample data. Laid out to mirror a CRM · GA4 · Search Console · ad platform setup. Data to <span id="fSnap">—</span> · channels verified <span id="fVer">—</span> · GBP.</footer>
+
+<div id="tip" role="tooltip"></div>
+
+<script src="data.js"></script>
+<script>
+/* Page code. Your numbers live in data.js next to this file. */
+/* SQL tab is derived from the Money Board, so the two can never disagree */
+const ATTRIB_SQL = (()=>{ const g={}; MB.filter(r=>!r.noMql).forEach(r=>{ const k=convGroup(r.conv); g[k]=(g[k]||0)+1; });
+  return Object.entries(g).sort((a,b)=>b[1]-a[1]); })();
+const ATTRIB_VIEWS = {
+  mql:{data:ATTRIB_MQL, text:'U-shaped credit per campaign — 2026 MQLs · hover for how points work', tip:'Transcribed from the CRM’s “Contact create attribution” report. Each MQL = 1 point: 40% first touch, 40% converting touch, 20% across the middle. The API does not expose this report, so it is a snapshot.'},
+  sql:{data:ATTRIB_SQL, text:'The MQL→SQL contacts by first conversion (proxy) · hover for the caveat', tip:'Proxy: true U-shaped credit for SQLs is not exposed by the API, so this groups the Money Board’s MQL→SQL contacts by the form or event that first converted them.'},
+  cust:{data:ATTRIB_CUST, text:'2026 new customers by first conversion (proxy) · hover for the caveat', tip:'Proxy: contacts entering the Customer stage in 2026, including every seat contact at newly won accounts, which is why the top row has no form.'},
+};
+/* ═══════════ helpers ═══════════ */
+const $=q=>document.querySelector(q);
+const fmt=n=>n==null?'—':n.toLocaleString('en-GB');
+const gbp=n=>n==null?'—':'£'+(n>=1e6?(n/1e6).toFixed(2)+'M':n>=1000?Math.round(n/1000)+'K':n);
+function ragOf(actual,target){
+  if(actual==null||target==null||target===0) return {cls:'n',label:'no target'};
+  const r=actual/target;
+  return r>=RAG.green?{cls:'g',label:Math.round(r*100)+'% of target'}
+       : r>=RAG.amber?{cls:'a',label:Math.round(r*100)+'% of target'}
+       : {cls:'r',label:Math.round(r*100)+'% of target'};
+}
+const ragChip=(a,t)=>{const r=ragOf(a,t);const d=r.cls==='g'?'🟢':r.cls==='a'?'🟠':r.cls==='r'?'🔴':'⚪';return `<span class="rag ${r.cls}">${d} ${r.label}</span>`};
+const esc=t=>t.replace(/"/g,'&quot;');
+
+const tip=$('#tip');
+document.addEventListener('mousemove',e=>{
+  const f=e.target.closest('[data-flag],[data-tip]');
+  if(f){tip.innerHTML=f.dataset.flag||f.dataset.tip;tip.style.opacity=1;
+    const w=tip.offsetWidth,x=Math.min(e.clientX+14,innerWidth-w-12);
+    tip.style.left=x+'px';tip.style.top=Math.min(e.clientY+16,innerHeight-tip.offsetHeight-12)+'px';}
+  else tip.style.opacity=0;
+});
+
+function pipeListFor(from,to){
+  const ds=DEALS.filter(r=>r[3]>=from&&r[3]<=to);
+  const top=ds.filter(r=>r[2]>0).sort((a,b)=>b[2]-a[2]).slice(0,3).map(r=>r[1].replace(/ — .*/,'')+' '+gbp(r[2]));
+  return ds.length+' New Business deal'+(ds.length===1?' was':'s were')+' created in this window'+(top.length?'. Biggest: '+top.join(' · '):'')+'.';
+}
+const DAY=86400000;
+function dIdx(str){ return Math.round((Date.parse(str+'T00:00:00Z')-Date.parse(DAILY.start+'T00:00:00Z'))/DAY); }
+function dSum(a,i,j){ let t=0; for(let k=Math.max(0,i);k<=Math.min(a.length-1,j);k++) t+=a[k]; return t; }
+function fmtDay(str){ const d=new Date(str+'T00:00:00Z');
+  return d.getUTCDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getUTCMonth()]+' '+d.getUTCFullYear(); }
+/* ---- PERIOD WINDOWS -------------------------------------------------------
+   Every preset's window, its "Measuring:" label, its pace marker and its
+   funnel numbers are DERIVED from the daily series — none of it is typed by
+   hand. Move DAILY.end on a refresh and the whole board rolls forward
+   together, so the date label can never drift away from the numbers under it. */
+const SNAP=DAILY.end, SY=+SNAP.slice(0,4), SM=+SNAP.slice(5,7);
+/* the day the channel tiles were last re-pulled and cross-checked against closed H1 */
+const MONTH_FULL=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const pad2=n=>String(n).padStart(2,'0');
+function dAdd(str,n){ return new Date(Date.parse(str+'T00:00:00Z')+n*DAY).toISOString().slice(0,10); }
+function mEnd(y,m){ return new Date(Date.UTC(y,m,0)).toISOString().slice(0,10); }
+/* "1–23 Sep 2026" within one month, "1 Jul – 23 Sep 2026" across months */
+function fmtSpan(f,t){
+  const fy=+f.slice(0,4),fm=+f.slice(5,7),fd=+f.slice(8,10);
+  const ty=+t.slice(0,4),tm=+t.slice(5,7),td=+t.slice(8,10);
+  if(fy===ty&&fm===tm) return fd+'–'+td+' '+MON3[tm-1]+' '+ty;
+  if(fy===ty) return fd+' '+MON3[fm-1]+' – '+td+' '+MON3[tm-1]+' '+ty;
+  return fmtDay(f)+' – '+fmtDay(t);
+}
+const QN=Math.floor((SM-1)/3)+1, QSM=(QN-1)*3+1;
+const WINDOWS={
+  weekly:   {from:dAdd(SNAP,-6),         full:SNAP,            short:'the week',        open:'last 7 days of the snapshot',                    shut:'last 7 days of the snapshot'},
+  monthly:  {from:SY+'-'+pad2(SM)+'-01', full:mEnd(SY,SM),     short:MONTH_FULL[SM-1],  open:'calendar month to snapshot – not rolling 30 days',shut:'full calendar month'},
+  quarterly:{from:SY+'-'+pad2(QSM)+'-01',full:mEnd(SY,QSM+2),  short:'Q'+QN,            open:'Q'+QN+' to date',                                shut:'Q'+QN+' complete'},
+  h1:       {from:SY+'-01-01',           full:SY+'-06-30',     short:'H1',              open:'H1 to date',                                     shut:'closed period'},
+  h2:       {from:SY+'-07-01',           full:SY+'-12-31',     short:'H2',              open:'H2 to date',                                     shut:'H2 complete'},
+  annual:   {from:SY+'-01-01',           full:SY+'-12-31',     short:''+SY,             open:'year to date',                                   shut:'full year'},
+};
+Object.keys(WINDOWS).forEach(k=>{
+  const w=WINDOWS[k], p=P[k];
+  if(!p) return;
+  /* clamp the window to the data we actually hold */
+  const to = SNAP<w.full ? (SNAP<w.from ? w.from : SNAP) : w.full;
+  const running = SNAP < w.full;
+  const i=dIdx(w.from), j=dIdx(to), jf=dIdx(w.full);
+  p.from=w.from; p.to=to; p.open=running; p.short=w.short;
+  p.elapsed = running ? Math.max(1,Math.min(100,Math.round((j-i+1)/(jf-i+1)*100))) : 100;
+  p.range = fmtSpan(w.from,to)+' ('+(running?w.open:w.shut)+')';
+  /* funnel read straight off the daily series, so the label and the numbers
+     under it are always the same window */
+  p.mql=dSum(DAILY.mql,i,j);   p.meetings=dSum(DAILY.meet,i,j);
+  p.sqls=dSum(DAILY.sql,i,j);  p.sqlsEx=dSum(DAILY.sqlex,i,j);
+  p.pipeline=dSum(DAILY.pipe,i,j);
+  /* Named deal and meeting lists are written by hand against a fixed window.
+     H1 is closed so its lists still describe exactly this span; every other
+     window now moves with the snapshot, so a stale name list would be a lie —
+     fall back to the counts the daily series can prove. */
+  p.meetWho=null; p.pipeList=pipeListFor(w.from,to);
+});
+
+/* Builds a period object shaped like the presets, summed from the daily series. */
+function buildCustom(from,to){
+  const i=dIdx(from), j=dIdx(to), days=j-i+1;
+  const todayIdx=dIdx(DAILY.end);
+  const elapsed = j<=todayIdx ? 100 : Math.max(1,Math.round((todayIdx-i+1)/days*100));
+  return {
+    label:'Custom', fm:days/30.44, elapsed:elapsed, custom:true, days:days, from:from, to:to,
+    range:fmtDay(from)+' → '+fmtDay(to)+' ('+days+' days) — your own range, summed day by day',
+    short:'this range',
+    mql:dSum(DAILY.mql,i,j), meetings:dSum(DAILY.meet,i,j),
+    sqls:dSum(DAILY.sql,i,j), sqlsEx:dSum(DAILY.sqlex,i,j),
+    pipeline:dSum(DAILY.pipe,i,j),
+    pipeList:pipeListFor(from,to),
+    meetWho:null, demos:null, demosRaw:null, gsc:null, ai:null, content:null, li:null,
+    /* Channel 3 is a 2026-scoped tile — it never follows the date buttons, so keep the year figure */
+    bc:P.annual.bc, bcSubs:P.annual.bcSubs
+  };
+}
+/* ── Stage drill-down ──────────────────────────────────────────────────────
+   Click any funnel bar to see exactly who is behind the number, and open
+   each one in HubSpot. Rows are filtered by the SAME window the bar uses,
+   so a custom date range drills down just as well as a preset. */
+function stageRows(key, from, to){
+  const inW = d => !!d && d>=from && d<=to;
+  if(key==='mql')
+    return PEOPLE.mql.filter(r=>inW(r[3]))
+      .map(r=>({id:r[0], n:r[1], co:r[2], d:r[3],
+                sub: r[5] ? 'met '+fmtDay(r[5]) : (r[4] ? 'went SQL '+fmtDay(r[4]) : ''),
+                tag: r[5] ? 'met' : (r[4] ? 'sql' : '')}));
+  if(key==='meet')
+    return PEOPLE.mql.filter(r=>inW(r[3]) && r[5])
+      .map(r=>({id:r[0], n:r[1], co:r[2], d:r[5], sub:'MQL '+fmtDay(r[3]), tag:'met'}));
+  if(key==='sql')
+    return PEOPLE.sql.filter(r=>inW(r[3]) && r[4])
+      .map(r=>({id:r[0], n:r[1], co:r[2], d:r[3], sub:'MQL first, '+fmtDay(r[4]), tag:'mkt'}));
+  if(key==='sql-sales')
+    return PEOPLE.sql.filter(r=>inW(r[3]) && !r[4])
+      .map(r=>({id:r[0], n:r[1], co:r[2], d:r[3], sub:'Entered straight at SQL, no MQL', tag:'sales'}));
+  if(key==='pipe')
+    return DEALS.filter(r=>inW(r[3]) && r[2]>0)
+      .map(r=>({id:r[0], n:r[1], co:'', d:r[3], amt:r[2], deal:true}));
+  return null;
+}
+const STAGE_META = {
+  mql:  {t:'MQLs',                lead:'Everyone who entered the MQL stage in this window.'},
+  meet: {t:'Meetings after MQL',  lead:'MQLs who then had a meeting. Counted against the month they became an MQL, so the date shown is the meeting.'},
+  sql:  {t:'SQLs from MQLs (marketing-sourced)', lead:'The dark bar. These people were MQLs first, so marketing built the journey — this is the number scored against the SQL target.'},
+  'sql-sales': {t:'SQLs — sales-added',    lead:'The pale bar. Sales created or flipped these straight to SQL with no marketing journey, usually at Discovery &amp; Scoping. Shown for context, never scored against marketing.'},
+  pipe: {t:'Pipeline £',          lead:'Every New Business deal created in this window.'},
+};
+function openStage(key){
+  const p = cur==='custom' ? P.custom : P[cur];
+  const meta = STAGE_META[key] || {t:key, lead:''};
+  const rows = stageRows(key, p.from, p.to);
+  const wrap = document.createElement('div');
+  wrap.className = 'drill';
+  const close = () => wrap.remove();
+
+  let body;
+  if(!rows || !rows.length){
+    body = `<div class="drill-empty">No records in this window.</div>`;
+  } else {
+    rows.sort((a,b)=> a.d===b.d ? a.n.localeCompare(b.n) : (a.d<b.d?1:-1));
+    const totalAmt = key==='pipe' ? rows.reduce((s,r)=>s+(r.amt||0),0) : null;
+    body = `<input class="drill-find" type="search" placeholder="Filter by name or company…" autocomplete="off">
+      <div class="drill-list">${rows.map(r=>`
+        <div class="drill-row" data-s="${esc((r.n+' '+r.co).toLowerCase())}">
+          <span class="drill-who"><b>${esc(r.n)}${r.deal?` <span class="drill-amt">${gbp(r.amt)}</span>`:''}</b>${r.co?`<small>${esc(r.co)}</small>`:''}</span>
+          <span class="drill-when">${fmtDay(r.d)}${r.sub?`<small>${esc(r.sub)}</small>`:''}</span>
+          </div>`).join('')}</div>
+      <div class="drill-foot"><span id="drillCount">${rows.length}</span> of ${rows.length} shown${totalAmt!=null?` · ${gbp(totalAmt)} total`:''} · names are fictional (the original links each row to its CRM record)</div>`;
+  }
+  wrap.innerHTML = `<div class="drill-box" role="dialog" aria-modal="true" aria-label="${esc(meta.t)}">
+      <div class="drill-head">
+        <div><h3>${esc(meta.t)}</h3><p>${esc(meta.lead)}<br><b>${esc(p.range)}</b></p></div>
+        <button class="drill-x" aria-label="Close">✕</button>
+      </div>${body}</div>`;
+  document.body.appendChild(wrap);
+  wrap.querySelector('.drill-x').addEventListener('click', close);
+  wrap.addEventListener('click', e=>{ if(e.target===wrap) close(); });
+  document.addEventListener('keydown', function esc0(e){
+    if(e.key==='Escape'){ close(); document.removeEventListener('keydown', esc0); } });
+  const find = wrap.querySelector('.drill-find');
+  if(find){
+    find.addEventListener('input', ()=>{
+      const q = find.value.trim().toLowerCase();
+      let n = 0;
+      wrap.querySelectorAll('.drill-row').forEach(el=>{
+        const show = !q || el.dataset.s.indexOf(q) >= 0;
+        el.style.display = show ? '' : 'none'; if(show) n++;
+      });
+      const c = wrap.querySelector('#drillCount'); if(c) c.textContent = n;
+    });
+    find.focus();
+  }
+}
+
+/* CARDS (in data.js) can rename, re-source, re-goal or hide any tile */
+function applyCard(c){
+  const o=(typeof CARDS!=='undefined'&&CARDS[c.key])||{};
+  if(o.show===false) return null;
+  if(o.title) c.n=htmlEsc(o.title);
+  if(o.emoji) c.e=o.emoji;
+  if(o.source) c.src=htmlEsc(o.source);
+  if(o.hint!==undefined) c.hint=o.hint?htmlEsc(o.hint):'';
+  if(o.goal!=null&&c.goal!=null) c.goal=o.goal;
+  return c;
+}
+let cur='monthly';
+function render(){
+  const p = cur==='custom' ? P.custom : P[cur];
+  if(nsRedraw) nsRedraw(p);
+  $('#periodNote').textContent='Measuring: '+p.range;
+  const cn=$('#customNote');
+  if(cn) cn.style.display = p.custom ? 'block' : 'none';
+
+  const mqlT=Math.round(TARGETS.mqlPerMonth*p.fm);
+  const meetT=Math.round(TARGETS.meetPerMonth*p.fm);
+  const sqlT=Math.max(1,Math.round(TARGETS.sqlShareOfMQL*(p.mql||0)));
+  const demoT=Math.max(1,Math.round(TARGETS.demoPerMonth*p.fm));
+
+  /* — funnel — */
+  const sqlOther=(p.sqls!=null&&p.sqlsEx!=null)?p.sqls-p.sqlsEx:null;
+  const stages=[
+    {key:'mql',e:'🎯',n:'MQLs',v:p.mql,rag:p.mql,t:mqlT,col:'var(--f1)',
+     tt:`<b>${fmt(p.mql)} MQLs</b> vs target ${mqlT} for ${p.short}<br><span class="tt-sub"><b>Click the bar to see all of them.</b><br><br>Entered the MQL stage in the period. Split: inbound vs outbound — see MQLs by month below.</span>`},
+    {key:'meet',e:'🤝',n:'Meetings after MQL',v:p.meetings,rag:p.meetings,t:meetT,col:'var(--f2)',
+     tt:`<b>${fmt(p.meetings)} MQLs met after MQLing</b> vs target ${meetT}<br>${p.meetWho?'<span class="tt-sub">'+esc(p.meetWho).split(' · ').map(x=>'• '+x).join('<br>')+'</span><br>':''}<br><span class="tt-sub"><b>Click the bar for the names.</b><br><br>Cohort-counted: a meeting counts against the month the contact became an MQL, so late-booked meetings backfill on refresh.</span>`},
+    {key:'sql',e:'📋',n:'SQLs from MQLs',v:p.sqlsEx,other:sqlOther,otherKey:'sql-sales',rag:p.sqlsEx,t:sqlT,col:'var(--f3)',
+     tt:`<b>${fmt(p.sqlsEx)} SQLs from MQLs</b> vs target ${sqlT} (10% of the period’s MQLs)<br><span class="tt-sub"><b>The dark bar. Click it for the names.</b><br><br>Marketing’s number — these people were MQLs first, so marketing built the journey. The conversion % and RAG status use ONLY this number.<br><br>There is also a pale bar alongside it: ${fmt(sqlOther)} sales-added SQLs with no marketing journey. Click the pale bar itself for that list — it is never scored against marketing.</span>`,
+     otherTip:`<b>${fmt(sqlOther)} sales-added SQLs</b> in ${p.short}<br><span class="tt-sub"><b>The pale bar. Click it for the names.</b><br><br>Sales created or flipped these straight to SQL with no marketing journey — usually when a deal reaches Discovery &amp; Scoping. Shown for context, never scored against marketing.<br><br>Total who entered SQL in ${p.short} (dark + pale): ${fmt(p.sqls)}.</span>`},
+    {key:'pipe',e:'💷',n:'Pipeline £',v:p.pipeline,rag:null,t:null,col:'var(--f4)',money:true,
+     tt:`<b>${gbp(p.pipeline)}</b> deal value created in ${p.short} (New Business pipeline)<br><span class="tt-sub">Click the bar for the deal list.<br><br>${p.pipeList?esc(p.pipeList):'n/a this window.'}</span>`},
+  ];
+  const W=680,BH=44,GAP=30,LW=185;
+  let svg=`<svg viewBox="0 0 ${W} ${stages.length*(BH+GAP)-GAP+14}" width="100%" role="img" aria-label="Marketing funnel">`;
+  const maxV=Math.max(p.mql||1,1);
+  stages.forEach((s,i)=>{
+    const y=i*(BH+GAP);
+    const bw=s.v==null?46:Math.max(52,(W-LW-8)*(s.money?0.55:Math.max((s.v/maxV),0.08)));
+    const r=ragOf(s.rag,s.t);
+    const col=s.v==null?'#DDD5C4':s.col;
+    let extraOther='', afterX=LW+bw;
+    if(s.other!=null&&s.other>0){
+      const ow=Math.max(34,(W-LW-8)*Math.max(s.other/maxV,0.05));
+      extraOther=`<g class="fstage" data-stage="${s.otherKey||s.key}" data-tip="${esc(s.otherTip||s.tt)}">
+        <rect class="bar" x="${LW+bw+6}" y="${y+4}" width="${ow}" height="${BH-8}" rx="9" fill="var(--f-other)"/>
+        <text class="num" x="${LW+bw+6+10}" y="${y+BH/2+5}" font-family="Plus Jakarta Sans" font-size="14" font-weight="700" fill="var(--ink-soft)">${fmt(s.other)}</text>
+      </g>`;
+      afterX=LW+bw+6+ow;
+    }
+    svg+=`<g class="fstage" data-stage="${s.key}" data-tip="${esc(s.tt)}">
+      <text x="0" y="${y+BH/2+5}" font-family="Figtree" font-size="13.5" font-weight="700" fill="var(--ink)">${s.e} ${s.n}</text>
+      <rect class="bar" x="${LW}" y="${y+4}" width="${bw}" height="${BH-8}" rx="9" fill="${col}"/>
+      <text class="num" x="${LW+12}" y="${y+BH/2+5}" font-family="Plus Jakarta Sans" font-size="17" font-weight="800" fill="#FFFDF8">${s.money?gbp(s.v):fmt(s.v)}</text>
+      ${s.t?`<text x="${afterX+10}" y="${y+BH/2-3}" font-size="9.5" fill="var(--ink-mute)">target ${s.t}</text>
+      <text x="${afterX+10}" y="${y+BH/2+10}" font-size="9.5" font-weight="600" fill="${r.cls==='g'?'var(--rag-g)':r.cls==='a'?'var(--rag-a)':r.cls==='r'?'var(--rag-r)':'var(--ink-mute)'}">${r.label}</text>`:''}
+    </g>${extraOther}`;
+    if(i<stages.length-1){
+      const a=stages[i].rag??stages[i].v, b=stages[i+1].rag??stages[i+1].v;
+      let conv=(a&&b!=null&&!stages[i+1].money&&!stages[i].money)?(b/a*100):null;
+      let lbl='↓';
+      if(conv!=null&&conv<=100) lbl='↓ '+conv.toFixed(1)+'% convert';
+      else if(conv!=null) lbl='↓ not a strict subset';
+      svg+=`<g><line x1="${LW+20}" y1="${y+BH+2}" x2="${LW+20}" y2="${y+BH+GAP-2}" stroke="var(--line)" stroke-width="2"/>
+      <text x="${LW+30}" y="${y+BH+GAP/2+3.5}" font-size="9" fill="var(--drop)" font-weight="500">${lbl}</text></g>`;
+    }
+  });
+  svg+='</svg>';
+  $('#funnelHost').innerHTML=svg;
+  $('#funnelHost').querySelectorAll('.fstage').forEach(g=>g.addEventListener('click',()=>openStage(g.dataset.stage)));
+
+  /* — KPI row — */
+  const kpis=[
+    {key:'mql',e:'🎯',n:'MQLs',src:'HubSpot',
+     val:fmt(p.mql), small:'',
+     tgt:mqlT, act:p.mql, cmp:`target ${mqlT} for ${p.short}`,
+     info:'The red / amber / green status compares MQLs to the period’s full target (150/month). Events vs everything-else split lives in the monthly chart below.'},
+    {key:'demos',e:'🙋',n:'Qualified demo requests',src:'HubSpot',
+     val:fmt(p.demos), small:'',
+     tgt:demoT, act:p.demos, cmp:`target ${demoT} for ${p.short}`,
+     info:'Someone who submitted a demo or book-a-meeting request, on the website or a paid demo ad, whose lifecycle stage is NOW MQL or beyond. Newsletter sign-ups on those pages and staff do not count.'+(p.demosRaw!=null?`<br><br><b>${fmt(p.demosRaw)} requests</b> came in over this window; <b>${fmt(p.demos)}</b> are qualified. The rest are leads, subscribers and junk.`:'')+'<br><br><b>Target 15/month.</b> Demo volume was the H1 pain point, so this tile sits in the primary row.'},
+    {key:'meetings',e:'🤝',n:'Meetings booked (post-MQL)',src:'HubSpot',
+     val:fmt(p.meetings), small:'',
+     tgt:meetT, act:p.meetings, cmp:`target ${meetT} for ${p.short}`,
+     info:'Meeting held or booked AFTER the contact became an MQL, counted against the month they MQL’d — late-booked meetings backfill on refresh. Target 40/month. β until the HubSpot scheduler is adopted.'},
+  ].map(applyCard).filter(Boolean);
+  /* pace only makes sense while a period is still running */
+  const running = p.custom ? (p.elapsed<100) : !!p.open;
+  $('#kpiRow').style.setProperty('--cols',Math.max(1,Math.min(3,kpis.length)));
+  $('#kpiRow').innerHTML=kpis.map(k=>{
+    const r=ragOf(k.act,k.tgt);
+    const fill=r.cls==='g'?'var(--good)':r.cls==='a'?'var(--warn)':r.cls==='r'?'var(--bad)':'#C9C2B4';
+    const w=k.act!=null&&k.tgt?Math.min(100,Math.round(k.act/k.tgt*100)):0;
+    return `<div class="card tile kpi ${k.act==null?'stale':''}">
+      <div class="t-h">${k.e} ${k.n}<span class="sp src">${k.src}</span></div>
+      <div class="val num">${k.val}<small>${k.small}</small></div>
+      <div class="cmp">${ragChip(k.act,k.tgt)} · ${k.cmp} <span class="info" data-flag="${esc(k.info)}">i</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${w}%;background:${fill}"></div>
+        ${running?`<div class="bar-elapsed" style="left:${p.elapsed}%" data-tip="<b>The pace marker</b><br><span class='tt-sub'>${p.elapsed}% of ${p.short} has gone, so to be on track the coloured bar should reach this line. Past the line = ahead of pace. Short of it = behind.</span>"></div>`:''}</div>
+      ${running
+        ?`<div style="font-size:10.5px;color:var(--ink-mute);margin-top:5px" data-tip="<b>How to read this</b><br><span class='tt-sub'>${p.short} is still running, so pace matters here. Time gone when this data was pulled: ${p.elapsed}%. Target hit so far: ${w}%. If the second number is lower, you need to go faster than the time left allows.</span>">⏱ <b>${p.elapsed}%</b> of ${p.short} gone · <b>${w}%</b> of target done — ${k.act!=null&&k.tgt?(w>=p.elapsed?'on pace':'behind pace'):'no target'}</div>`
+        :`<div style="font-size:10.5px;color:var(--ink-mute);margin-top:5px" data-tip="<b>Closed period</b><br><span class='tt-sub'>${p.short} has finished, so there is no pace to keep — this is the final number against the target. Pick Quarterly, H2 or Annual to see pace on a period that is still running.</span>">✓ <b>${p.short} is complete</b> — final number, ${w}% of target</div>`}
+    </div>`;
+  }).join('');
+
+
+  /* — channels — */
+  const li=p.li;
+  const liMain = li ? (li.ql!=null?fmt(li.ql):fmt(li.leads)) : '—';
+  const liUnit = li ? (li.leads===1?' lead':' leads') : '';
+  /* Events tile is summed from the EVENTS board below, never typed */
+  const evT=EVENTS.filter(e=>!e.notracked), evHeld=evT.reduce((t,e)=>t+(e.held||0),0), evSpend=evT.reduce((t,e)=>t+(e.cost||0),0), evGoal=EVENTS.reduce((t,e)=>t+(e.goal||0),0);
+  const chans=[
+    {key:'paid',e:'📱',n:'Channel 1',hint:'e.g. paid media · Google Ads',cls:'c-li',scope:'filter',src:'Ad platform',stale:!li,
+     val:liMain, unit:liUnit,
+     line:li?`<b class="num">${gbp(li.spend)}</b> spend · <b class="num">${fmt(li.clicks)}</b> clicks${li.cpc?` · <b class="num">£${li.cpc.toFixed(2)}</b> CPC`:''}${li.cpql?` · <b class="num">£${li.cpql.toLocaleString('en-GB')}</b> per lead`:''}`:'—',
+     goal:li?30:null, goalUnit:'leads / month', goalActual:li?li.leads:null, goalFm:true,
+     info:li?('A LEAD = someone who submitted an ad lead form AND became an MQL in the CRM. Submitting alone does not count. '+li.note+'<br><br><b>Goal 30/month</b>, just under the H1 run rate of about 32 a month at £189 each.<br><br><b>Blind spot:</b> lead-form submissions only. Ads that drive to the website land as ordinary form fills.'):''},
+    {key:'search',e:'🔍',n:'Channel 2',hint:'e.g. search & AI',cls:'c-se',scope:'filter',src:'GSC + GA4',stale:p.gsc==null,
+     val:fmt(p.gsc), unit:' non-branded clicks',
+     line:`<b class="num">${fmt(p.ai)}</b> AI-referral sessions`,
+     goal:600, goalUnit:'non-branded clicks / month', goalActual:p.gsc, goalFm:true,
+     info:'NON-BRANDED organic clicks from Google Search Console: people who found you without searching the brand name. The line underneath is AI-referral sessions from ChatGPT, Perplexity, Claude, Gemini and Copilot, measured in GA4.<br><br><b>⚠ Both undercount.</b> Google withholds long-tail queries, and GA4 only sees visitors who accept cookies, so treat the AI number as a floor.<br><br><b>Goal 600/month</b>: H1 averaged about 380 a month and Q3 about 370, so organic is well short of plan.'},
+    {key:'social',e:'🎧',n:'Channel 3',hint:'e.g. Reddit or Spotify Ads',cls:'c-bc',src:'CRM',stale:false,scope:'year',
+     val:fmt(p.bc), unit:p.bc===1?' meeting booked':' meetings booked',
+     line:'<b>118</b> ad responses · <b>41</b> MQLs · <b>10</b> new SQLs',
+     goal:30, goalUnit:'meetings / year',
+     info:'Meetings booked by people who responded to this channel’s ads. A “new SQL” means the SQL stamp landed AFTER their first response. Contacts who were already SQL count as re-engaged, never toward the goal.<br><br><b>Goal 30 meetings a year.</b> Tracked for 2026 as a whole, so the date buttons don’t change it.'},
+    {key:'content',e:'📰',n:'Channel 4',hint:'e.g. report downloads',cls:'c-co',scope:'filter',src:'CRM',stale:p.content==null,
+     val:fmt(p.content), unit:p.content===1?' download this period':' downloads this period',
+     line:(p.contentMql!=null&&p.content)?`<b class="num">${fmt(p.contentMql)}</b> became MQLs · <b class="num">${Math.round(p.contentMql/p.content*100)}%</b> download → MQL rate`:'—',
+     goal:80, goalUnit:'downloads / month', goalFm:true,
+     info:'Report form submissions on the website in the selected period (latest-conversion based). June’s spike was two report launches.<br><br><b>⚠ Blind spot:</b> reports downloaded through an ad-platform lead form convert inside the ad platform, so real reach is higher.<br><br><b>Goal 80/month</b>: a reach metric, so the MQL and SQL numbers judge quality. No new report has launched since June, so downloads have tailed off.'},
+    {key:'events',e:'🎪',n:'Channel 5',hint:'e.g. events',cls:'c-ev',src:'CRM',scope:'year',goal:evGoal,goalUnit:'meetings held / year',goalActual:evHeld,
+     val:fmt(evHeld), unit:' meetings held · 2026',
+     line:`<b>${evHeld?'£'+Math.round(evSpend/evHeld).toLocaleString('en-GB'):'—'}</b> per meeting · <b>£${(evSpend/1000).toFixed(1)}K</b> spend across ${evT.length} tracked events`,
+     info:'MEETINGS HELD, not booked.<br><br><b>How it works.</b> Each event gets two goals that agree: meetings held, and cost per meeting held against a ceiling of £1,000 for a local venue or £2,000 for travel or a stand. The meetings goal is the event’s cost divided by its ceiling, so hitting one means hitting the other.<br><br><b>⚠ Held is a proxy.</b> The CRM’s meeting-outcome field is mostly blank, so “held” means the date has passed.'},
+  ].map(applyCard).filter(Boolean);
+  $('#chanRow').style.setProperty('--cols',Math.max(1,Math.min(5,chans.length)));
+  $('#chanRow').innerHTML=chans.map(c=>{
+    /* goal maths: goalFm scales a per-month goal to the selected period */
+    const g = c.goal!=null ? (c.goalFm ? Math.round(c.goal*p.fm) : c.goal) : null;
+    const actRaw = c.goalActual!==undefined ? c.goalActual : parseFloat(String(c.val).replace(/[^0-9.]/g,''));
+    const act = (actRaw==null||isNaN(actRaw)) ? null : actRaw;
+    const pct = (g&&act!=null) ? Math.round(act/g*100) : null;
+    const r = ragOf(act,g);
+    const fill = r.cls==='g'?'var(--good)':r.cls==='a'?'var(--warn)':r.cls==='r'?'var(--bad)':'#C9C2B4';
+    const hit = pct!=null&&pct>=100;
+    const chip = c.scope==='year'
+      ? '<span class="scope year" data-tip="The whole of 2026 — the date buttons above do NOT change this tile.">2026</span>'
+      : '<span class="scope filt" data-tip="This tile DOES follow the date buttons at the top. Right now it is showing ' + esc(p.range) + '. Switch period and this number changes with it.">follows filter</span>';
+    return `<div class="card tile chan ${c.cls} ${c.stale?'stale':''}">
+    <div class="t-h"><span class="t-nm">${c.e} ${c.n}${c.hint?`<small class="t-hint">(${c.hint})</small>`:''}</span><span class="sp">${chip}<span class="info" data-flag="${esc(c.info)}">i</span></span></div>
+    <div class="val num" style="font-size:26px">${c.val}<small>${c.unit}</small></div>
+    <div class="cmp">${c.line}</div>
+    ${g!=null&&act!=null?`<div class="bar-track" data-tip="<b>${act} of ${g}</b> — ${pct}% of goal<br><span class='tt-sub'>Goal ${c.goal} ${esc(c.goalUnit)}${c.goalFm?', scaled to '+esc(p.short):''}. Hover the i for why this is the target.</span>">
+        <div class="bar-fill" style="width:${Math.min(100,pct)}%;background:${fill}"></div></div>
+      <div style="font-size:10.5px;color:var(--ink-mute);margin-top:5px" class="src">${c.src} · ${act} of ${g} goal${hit?' <span class="bj"></span>':''}</div>`
+    :g!=null?`<div class="bar-track"><div class="bar-fill tbc" data-tip="The goal is set, but this window has no verified number yet, so there is nothing to measure against it."></div></div>
+      <div style="font-size:10.5px;color:var(--ink-mute);margin-top:5px" class="src">${c.src} · goal ${g} · ⚠ no data for this window yet</div>`
+    :`<div class="bar-track"><div class="bar-fill tbc" data-tip="No goal set yet — use the “+ set goal” button below and the bar goes live."></div></div>
+      <div style="font-size:10.5px;color:var(--ink-mute);margin-top:5px" class="src">${c.src} · ${goalSetter('channel',c.n,c.n,c.unit.trim())||'target TBC'}</div>`}
+    </div>`;}).join('');
+}
+/* ═══════════ full-year charts ═══════════ */
+function mqlChart(){
+  const W=1080,H=250,pad={l:36,r:12,t:16,b:26},bw=64;
+  const max=260, plotW=W-pad.l-pad.r,
+        sx=i=>pad.l+plotW/MONTHS.length*(i+0.5),
+        sy=v=>H-pad.b-(v/max)*(H-pad.t-pad.b);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="MQLs by month, inbound vs outbound, with target line">`;
+  [0,50,100,150,200,250].forEach(g=>{s+=`<line x1="${pad.l}" x2="${W-pad.r}" y1="${sy(g)}" y2="${sy(g)}" stroke="var(--line)" stroke-width="1"/><text x="${pad.l-6}" y="${sy(g)+4}" font-size="10" fill="var(--ink-mute)" text-anchor="end">${g}</text>`;});
+  MONTHS.forEach((m,i)=>{
+    const inb=MQL_INBOUND[i],out=MQL_OUTBOUND[i],tot=inb+out,x=sx(i)-bw/2;
+    const yo=sy(inb),yi=sy(tot);
+    const partial = i===MONTHS.length-1;
+    s+=`<g class="mbar" data-tip="<b>${m} 2026 — ${tot} MQLs</b> <span class='tt-sub'>(target ${TARGETS.mqlPerMonth}${partial?' &middot; month still running':''})</span><br><br><span class='tt-sub'><b>Inbound: ${inb}</b><br>They came to you: forms, reports, demos, event sign-ups, paid and organic<br><br><b>Outbound: ${out}</b><br>You went to them: prospecting, imported lists, badge scans, partner lists<br><br>${esc(MONTH_NOTES[i])}</span>">
+      <rect x="${x}" y="${yo}" width="${bw}" height="${Math.max(0,H-pad.b-yo)}" rx="4" fill="var(--purple)"/>
+      <rect x="${x}" y="${yi}" width="${bw}" height="${Math.max(0,yo-yi-2)}" rx="4" fill="var(--teal)"/>
+      ${partial?`<rect x="${x}" y="${yi-1}" width="${bw}" height="${Math.max(0,H-pad.b-yi+1)}" rx="4" fill="none" stroke="var(--ink-mute)" stroke-width="1.5" stroke-dasharray="4 3"/>`:''}
+      <text x="${x+bw/2}" y="${yi-6}" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">${tot}</text>
+      <text x="${x+bw/2}" y="${H-pad.b+16}" font-size="11" fill="${partial?'var(--ink-mute)':'var(--ink-soft)'}" text-anchor="middle">${m}${partial?' ▸':''}</text></g>`;
+  });
+  s+=`<line x1="${pad.l}" x2="${W-pad.r}" y1="${sy(TARGETS.mqlPerMonth)}" y2="${sy(TARGETS.mqlPerMonth)}" stroke="var(--coral)" stroke-width="2" stroke-dasharray="7 5"/>
+      <line x1="${pad.l}" x2="${W-pad.r}" y1="${H-pad.b}" y2="${H-pad.b}" stroke="var(--ink-mute)" stroke-width="1"/></svg>`;
+  $('#mqlChart').innerHTML=s;
+}
+
+let EV_SORT={k:'held',dir:-1};
+const EV_COLS=[
+  {k:'name', label:'Event',            al:'left',  dir:1,  tip:'Sort A–Z by event name.'},
+  {k:'date', label:'Date',             al:'left',  dir:-1, tip:'Sort by event date, newest first.'},
+  {k:'days', label:'Days since',       al:'right', dir:-1, tip:'Sort by how long the event has had to mature.'},
+  {k:'mql',  label:'MQLs',             al:'right', dir:-1, tip:'Rank by MQLs generated — most first.'},
+  {k:'held', label:'Meetings held',    al:'right', dir:-1, tip:'Rank by meetings held — the number the goals are set in. Most first.'},
+  {k:'cost', label:'Event spend',      al:'right', dir:-1, tip:'Rank by what the event cost — most expensive first.'},
+  {k:'cpm',  label:'Cost per meeting', al:'right', dir:1,  tip:'Rank by cost per meeting held — CHEAPEST first. Events with no meetings yet drop to the bottom.'},
+];
+function evChart(){
+  const TODAY=dAdd(SNAP,1), MATURE_DAYS=90, MEDALS=['🥇','🥈','🥉'];
+  const days=d=> d? Math.round((Date.parse(TODAY)-Date.parse(d))/86400000) : null;
+  const q=n=>'£'+n.toLocaleString('en-GB');
+  const TAGS={owned:'Owned',sponsored:'Sponsored'};
+  /* one value per sortable column, null = unknown and always sinks to the bottom */
+  const val=(e,k)=>{
+    if(k==='name') return e.name.toLowerCase();
+    if(k==='date') return e.date? Date.parse(e.date) : null;
+    if(k==='days') return days(e.date);
+    if(k==='cpm')  return (e.held&&e.cost)? Math.round(e.cost/e.held) : null;
+    const v=e[k]; return (v==null)? null : v;
+  };
+  const K=EV_SORT.k, DIR=EV_SORT.dir;
+  const rows=EVENTS.slice().sort((a,b)=>{
+    const x=val(a,K), y=val(b,K);
+    if(x==null&&y==null) return 0;
+    if(x==null) return 1;          /* unknowns always last, whichever direction */
+    if(y==null) return -1;
+    if(x<y) return -1*DIR; if(x>y) return 1*DIR; return 0;
+  });
+  /* medals follow whatever column is being sorted on — top 3 with a real value */
+  const scored=rows.filter(e=>val(e,K)!=null).map(e=>e.name);
+  const useMedals = K!=='name' && K!=='date';
+
+  let html='<div class="tbl-wrap"><table class="lb"><thead><tr><th>#</th>'
+    + EV_COLS.map(c=>{
+        const on = c.k===K;
+        const car = on ? (DIR===1?'▲':'▼') : '▾';
+        return `<th class="sk${on?' on':''}${c.k==='held'?' lb-rate-h':''}" data-sk="${c.k}"`
+             + ` style="text-align:${c.al}" data-tip="${c.tip} Click any header to re-rank the board.">`
+             + `${c.label}<span class="car">${car}</span></th>`;
+      }).join('')
+    + '</tr></thead><tbody>';
+
+  rows.forEach(ev=>{
+    const d=days(ev.date), run = d!=null && d>=0, mature = run && d>=MATURE_DAYS;
+    const cpm=(ev.held&&ev.cost)?Math.round(ev.cost/ev.held):null;
+    const over=cpm!=null&&ev.ceiling&&cpm>ev.ceiling;
+    const rank=scored.indexOf(ev.name);
+    const medal = rank<0 ? '–' : (useMedals && rank<3 ? MEDALS[rank] : (rank+1));
+    let cpmTxt,cpmCls='';
+    if(ev.notracked) cpmTxt='<span class="lb-dash">—</span>';
+    else if(cpm!=null){ cpmTxt=q(cpm)+' <small style="font-weight:600;color:var(--ink-mute)">of '+q(ev.ceiling)+'</small>'; cpmCls=over?'cpm-over':'cpm-under'; }
+    else if(!run) cpmTxt='<span class="lb-dash">not yet run</span>';
+    else cpmTxt='<span class="lb-dash">no meetings yet</span>';
+    const chip = ev.notracked ? '<span class="lb-pre">no HubSpot data</span>'
+               : (!run ? '<span class="lb-pre">upcoming</span>'
+               : (!mature ? `<span class="lb-pre maturing">maturing · ${MATURE_DAYS-d}d</span>` : ''));
+    const tag = `<span class="ev-tag t-${ev.bucket}">${TAGS[ev.bucket]}</span>`;
+    html+=`<tr class="b-${ev.bucket} ${ev.notracked?'lb-untracked':''} ${rank===0&&useMedals?'lb-first':''}" data-tip="${esc(ev.tip).replace(/"/g,'&quot;')}">
+      <td class="lb-rank">${medal}</td>
+      <td class="lb-nm">${ev.name}${tag}${chip}${ev.manual?'<span class="lb-pre">hand-matched</span>':''}</td>
+      <td class="lb-when">${ev.when}${ev.dateApprox?' <span style="color:var(--warn)">≈</span>':''}</td>
+      <td class="lb-num">${d!=null?(d<0?'—':d):'—'}</td>
+      <td class="lb-num">${ev.mql!=null?ev.mql:'—'}</td>
+      <td class="lb-held">${ev.held!=null?ev.held:'—'}${(ev.booked!=null&&ev.booked>ev.held)?`<small style="font-weight:600;color:var(--ink-mute);font-size:10.5px"> +${ev.booked-ev.held} booked</small>`:''}</td>
+      <td class="lb-num">${ev.cost?q(ev.cost):'—'}</td>
+      <td class="lb-rate ${cpmCls}">${cpmTxt}</td></tr>`;
+  });
+
+  const sortLabel=(EV_COLS.find(c=>c.k===K)||{}).label;
+  html+='</tbody></table></div>'
+    +'<div style="font-size:9px;line-height:1.5;color:var(--ink-mute);margin-top:7px">'
+    +`Click any column header to re-rank — currently <b>${sortLabel}</b>. `
+    +'<b>+n booked</b> = meetings on the calendar not yet held, so they score nothing. '
+    +'<b>Not scored by design:</b> industry panels and award nights, where we attend rather than book a room or buy a stand.</div>';
+  $('#evChart').innerHTML=html;
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest&&e.target.closest('#pieTabs button');
+  if(!b) return;
+  PIE_MODE=b.dataset.pm; convPie();
+});
+/* header clicks re-sort; second click on the same column flips direction */
+document.addEventListener('click',e=>{
+  const th=e.target.closest&&e.target.closest('#evChart th.sk');
+  if(!th) return;
+  const k=th.dataset.sk, col=EV_COLS.find(c=>c.k===k);
+  EV_SORT = (EV_SORT.k===k) ? {k, dir:-EV_SORT.dir} : {k, dir:col.dir};
+  evChart();
+});
+
+
+
+/* ═══════════ Money Board — first-touch donut ═══════════ */
+const PIE_COLS=['#7B68EE','#1F9E8A','#FF4B33','#6E6996','#2D2A5E','#D99000','#C9C2DE'];
+function convGroup(conv){
+  /* Groups each contact's touch into the same five channels as the tiles above.
+     A touch named "Campaign X" uses that campaign's ch in CAMPAIGNS; "Event X" is Channel 5. */
+  const CH={1:'Channel 1 (e.g. paid media)',2:'Channel 2 (e.g. search & website forms)',3:'Channel 3 (e.g. Reddit / Spotify Ads)',4:'Channel 4 (e.g. report downloads)',5:'Channel 5 (e.g. events)'};
+  const c=String(conv||'').toLowerCase();
+  if(c.includes('sales-entered')||c.startsWith('none')) return 'No form (sales-entered)';
+  if(c.includes('paid media')) return CH[1];
+  const m=c.match(/campaign ([a-z])\b/);
+  if(m){ const k=(CAMPAIGNS.find(x=>x.name.toLowerCase()==='campaign '+m[1])||{}).ch; if(CH[k]) return CH[k]; }
+  if(c.includes('event')||c.includes('import')||c.includes('rsvp')||c.includes('badge')) return CH[5];
+  if(c.includes('report')||c.includes('guide')||c.includes('case study')) return CH[4];
+  return CH[2];
+}
+let PIE_MODE='first';
+function convPie(){
+  const host=$('#convPie'); if(!host) return;
+  const groups={};
+  MB.forEach(r=>{
+    /* latest = the last form they actually submitted; rows with no form ever fall back to first */
+    const src = PIE_MODE==='last' ? (r.lconv||r.conv) : r.conv;
+    const g=convGroup(src);
+    (groups[g]=groups[g]||{n:0,who:[]});
+    groups[g].n++;
+    groups[g].who.push(r.c+' ('+r.n+')');
+  });
+  const rows=Object.entries(groups).map(([k,v])=>({k,...v})).sort((a,b)=>b.n-a.n);
+  const total=rows.reduce((t,r)=>t+r.n,0)||1;
+  const R=112, r0=66, CX=138, CY=138;
+  let a0=-Math.PI/2, segs='';
+  rows.forEach((row,i)=>{
+    const frac=row.n/total, a1=a0+frac*Math.PI*2, col=PIE_COLS[i%PIE_COLS.length];
+    const big=frac>0.5?1:0;
+    const x0=CX+R*Math.cos(a0), y0=CY+R*Math.sin(a0), x1=CX+R*Math.cos(a1), y1=CY+R*Math.sin(a1);
+    const ix1=CX+r0*Math.cos(a1), iy1=CY+r0*Math.sin(a1), ix0=CX+r0*Math.cos(a0), iy0=CY+r0*Math.sin(a0);
+    const tip='<b>'+esc(row.k)+' — '+row.n+' of '+total+' ('+Math.round(frac*100)+'%)</b><br><span class="tt-sub">'+esc(row.who.join(' · '))+'</span>';
+    segs+='<path class="pie-seg" data-tip="'+tip.replace(/"/g,'&quot;')+'" fill="'+col+'" d="M '+x0.toFixed(1)+' '+y0.toFixed(1)+' A '+R+' '+R+' 0 '+big+' 1 '+x1.toFixed(1)+' '+y1.toFixed(1)+' L '+ix1.toFixed(1)+' '+iy1.toFixed(1)+' A '+r0+' '+r0+' 0 '+big+' 0 '+ix0.toFixed(1)+' '+iy0.toFixed(1)+' Z"/>';
+    a0=a1;
+  });
+  const moved=MB.filter(r=>r.lconv&&convGroup(r.lconv)!==convGroup(r.conv)).length;
+  host.innerHTML='<div class="attr-tabs" id="pieTabs" style="margin-bottom:10px">'
+    +'<button data-pm="first"'+(PIE_MODE==='first'?' class="on"':'')+' data-tip="The FIRST form each contact ever submitted — what originally pulled them into the CRM.">First touch</button>'
+    +'<button data-pm="last"'+(PIE_MODE==='last'?' class="on"':'')+' data-tip="The MOST RECENT form each contact submitted — what was in front of them closest to becoming sales-qualified. '+moved+' of '+MB.length+' contacts land in a different bucket on this view.">Latest touch</button>'
+    +'</div>'
+    +'<div class="pie-wrap">'
+    +'<svg viewBox="0 0 276 276" width="276" height="276" style="max-width:100%;height:auto" role="img" aria-label="First touch of the contacts who became SQLs">'+segs
+    +'<text x="'+CX+'" y="'+(CY-3)+'" text-anchor="middle" dominant-baseline="central" font-family="Plus Jakarta Sans" font-size="44" font-weight="800" fill="var(--ink)">'+total+'</text>'
+    +'<text x="'+CX+'" y="'+(CY+23)+'" text-anchor="middle" dominant-baseline="central" font-family="Figtree" font-size="13" fill="var(--ink-mute)">contacts</text></svg>'
+    +'<div class="pie-legend">'+rows.map((row,i)=>{
+      const medals=['🥇','🥈','🥉'];
+      const rk = i<3 ? '<span class="rk medal">'+medals[i]+'</span>' : '<span class="rk">'+(i+1)+'</span>';
+      const tip='<b>'+esc(row.k)+' — '+row.n+' of '+total+' ('+Math.round(row.n/total*100)+'%)</b><br><br><span class="tt-sub">'+esc(row.who.join('<br>'))+'</span>';
+      return '<div class="pie-li '+(i===0?'top1':'')+'" data-tip="'+tip.replace(/"/g,'&quot;')+'">'+rk
+        +'<span class="dot" style="background:'+PIE_COLS[i%PIE_COLS.length]+'"></span>'
+        +'<span class="lb">'+esc(row.k)+'</span><span class="n">'+row.n+'</span><span class="pc">'+Math.round(row.n/total*100)+'%</span></div>';
+    }).join('')+'</div></div>';
+}
+
+let attrView='mql';
+function attrChart(){
+  const view=ATTRIB_VIEWS[attrView];
+  const max=Math.max(...view.data.map(a=>a[1]));
+  $('#attrChart').innerHTML=view.data.map(([n,u])=>{
+    const wu=Math.max(1.5,u/max*100);
+    return `<div class="attr-row" data-tip="<b>${n}</b><br><span class='tt-sub'>${attrView==='mql'?('U-shaped MQL credit: '+u):(u+' contacts first converted here')}</span>">
+      <span class="nm">${n}</span>
+      <span><span class="b" style="width:${wu}%"></span></span>
+      <span class="v num">${u}</span></div>`;
+  }).join('');
+  $('#attrCaption').textContent='ⓘ '+view.text;
+  $('#attrCaption').dataset.flag=view.tip;
+}
+$('#attrTabs').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b)return;
+  attrView=b.dataset.v;
+  document.querySelectorAll('#attrTabs button').forEach(x=>x.classList.toggle('on',x===b));
+  attrChart();
+});
+
+function campChart(){
+  /* a hit means the goal is actually reached — being inside a band is not a hit */
+  const isHit=c=>c.goal!=null && (c.val/c.goal*100)>=100;
+  const row=c=>{
+    const pct=c.goal?Math.round(c.val/c.goal*100):null;
+    const w=c.goal?Math.min(100,pct):100;
+    const hit=isHit(c);
+    const cls=c.goal==null?'nogoal':(hit?'full':'');
+    const nm=c.name;
+    const valTxt=c.money?gbp(c.val):fmt(c.val);
+    const goalTxt=c.money?gbp(c.goal):fmt(c.goal);
+    return `<div class="camp-row ${c.ended?'camp-ended':''} ${hit?'camp-hit':''}" data-tip="${esc(c.tip)}">
+      <span class="nm"><span class="nm-t">${nm}</span><span class="metric-chip ${c.mtype}">${c.metric}${c.band?` · band ${c.band}`:''}</span></span>
+      <span class="track"><span class="fill ${cls}" style="width:${w}%"></span>
+        ${hit?`<span class="camp-hit-badge"><span class="bj"></span> goal hit</span>`:(c.ended?'<span class="camp-closed">✔ tracking closed</span>':'')}${c.goal?`<span class="pcttext">${pct}%</span>`:`<span class="pcttext">no goal set</span>`}</span>
+      <span class="v num">${valTxt}${c.goal?` <small>of ${goalTxt}</small>`:''}</span>
+    </div>`;
+  };
+  const live=CAMPAIGNS.filter(c=>!c.ended), done=CAMPAIGNS.filter(c=>c.ended);
+  $('#campChart').innerHTML = live.map(row).join('')
+    + (done.length?`<div class="camp-sep" data-tip="These campaigns have finished running. Their numbers are final and will not change again — they stay on the board as a record of what worked and what did not.">Finished — final numbers</div>`+done.map(row).join(''):'');
+}
+
+const MB_COLS=[
+  {k:'n',label:'Contact'},{k:'c',label:'Company'},{k:'conv',label:'First touch (conversion)'},
+  {k:'lt',label:'Latest source'},{k:'d',label:'Became SQL'},{k:'v',label:'Deal £'},{k:'why',label:'How did we get this deal?'},
+];
+let mbSort={k:'d',dir:-1}, mbQuery='', mbExpanded=false;
+const WHY_KEY='mbWhy.v1';
+const htmlEsc=t=>String(t).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const mbKey=r=>r.n+'|'+r.c;
+(function loadWhy(){
+  try{const saved=JSON.parse(localStorage.getItem(WHY_KEY)||'{}');
+    MB.forEach(r=>{const v=saved[mbKey(r)]; if(typeof v==='string') r.why=v;});}catch(e){}
+})();
+function saveWhy(r,v){
+  r.why=v;
+  try{const saved=JSON.parse(localStorage.getItem(WHY_KEY)||'{}'); saved[mbKey(r)]=v; localStorage.setItem(WHY_KEY,JSON.stringify(saved));}catch(e){}
+}
+function whyCell(r,i){
+  const pen=`<button class="why-edit" type="button" data-i="${i}" aria-label="Edit how we got this deal" title="Edit">✎</button>`;
+  if(r.why) return htmlEsc(r.why)+pen;
+  return '<span class="flagchip" data-flag="&quot;How did we get this deal?&quot; is empty on this deal. Click ✎ to fill it in.">⚠ empty</span>'+pen;
+}
+function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
+function editWhy(r){
+  const bk=document.createElement('div'); bk.className='mdl-bk';
+  bk.innerHTML=`<div class="mdl" role="dialog" aria-modal="true" aria-labelledby="whyH">
+    <h4 id="whyH">How did we get this deal?</h4>
+    <p>${htmlEsc(r.n)} · ${htmlEsc(r.c)}. Say what actually brought them in, e.g. "Met at the NY dinner, then booked a demo".</p>
+    <input id="whyIn" type="text" maxlength="140" value="${htmlEsc(r.why||'')}" placeholder="e.g. Referral from an existing client">
+    <div class="mdl-btns"><button type="button" id="whyCancel">Cancel</button><button type="button" class="pri" id="whySave">Save</button></div>
+  </div>`;
+  document.body.appendChild(bk);
+  const inp=bk.querySelector('#whyIn'); inp.focus(); inp.select();
+  const close=()=>bk.remove();
+  const save=()=>{saveWhy(r,inp.value.trim()); close(); moneyBoard(); toast('Saved: '+(r.why||'cleared'));};
+  bk.querySelector('#whyCancel').addEventListener('click',close);
+  bk.querySelector('#whySave').addEventListener('click',save);
+  bk.addEventListener('click',e=>{if(e.target===bk)close();});
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter')save(); if(e.key==='Escape')close();});
+}
+let mbShown=[];
+
+function goalSetter(){ return 'target TBC'; }
+function moneyBoard(){
+  let rows=MB.filter(r=>!mbQuery||[r.n,r.c,r.conv,r.lt,r.t,r.d].join(' ').toLowerCase().includes(mbQuery.toLowerCase()));
+  rows=[...rows].sort((a,b)=>{
+    const k=mbSort.k;
+    let av=a[k], bv=b[k];
+    if(k==='v'){av=av??-1;bv=bv??-1;return (av-bv)*mbSort.dir;}
+    if(k==='why'){av=a.why||'';bv=b.why||'';}
+    return String(av??'').localeCompare(String(bv??''))*mbSort.dir;
+  });
+  const total=rows.length;
+  const shown=mbExpanded?rows:rows.slice(0,10); mbShown=shown;
+  const fmtD=d=>{const [y,m,dd]=d.split('-');return dd+' '+['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m];};
+  $('#moneyBoard').innerHTML=`<table>
+    <thead><tr>${MB_COLS.map(c=>`<th data-k="${c.k}" ${c.k==='v'?'style="text-align:right"':''}>${c.label} ${mbSort.k===c.k?`<span class="arr">${mbSort.dir<0?'↓':'↑'}</span>`:''}</th>`).join('')}</tr></thead>
+    <tbody>${shown.map((r,i)=>`<tr>
+      <td><span class="mb-n" data-tip="${esc(r.t)}" style="font-weight:700;color:var(--purple);cursor:help">${r.n}</span>${r.noMql?' <span class="flagchip" data-flag="Marketing-sourced (deal source = a trade fair) but never stamped MQL in the CRM — the lifecycle skipped straight to SQL from the import. Counted because the deal source is marketing; fix going forward: stamp MQL before SQL.">⚠ no MQL stamp</span>':''}</td>
+      <td>${r.c}</td>
+      <td>${r.conv.startsWith('None')?'<span style="color:var(--warn)">'+r.conv+' ⚠</span>':r.conv}</td>
+      <td>${r.lt}</td>
+      <td class="num">${fmtD(r.d)}</td>
+      <td class="money" style="text-align:right">${gbp(r.v)}</td>
+      <td>${whyCell(r,i)}</td>
+    </tr>`).join('')}</tbody></table>
+    ${total>10?`<button class="showmore" id="mbMore">${mbExpanded?'Show fewer ↑':'Show all '+total+' contacts ↓'}</button>`:''}`;
+  $('#mbCount').textContent=total+' of '+MB.length+' contacts';
+  $('#moneyBoard thead').addEventListener('click',e=>{
+    const th=e.target.closest('th'); if(!th)return;
+    const k=th.dataset.k;
+    mbSort = mbSort.k===k ? {k, dir:-mbSort.dir} : {k, dir:k==='d'||k==='v'?-1:1};
+    moneyBoard();
+  });
+  const more=document.getElementById('mbMore');
+  if(more) more.addEventListener('click',()=>{mbExpanded=!mbExpanded;moneyBoard();});
+}
+$('#mbFilter').addEventListener('input',e=>{mbQuery=e.target.value.trim();moneyBoard();});
+$('#moneyBoard').addEventListener('click',e=>{const b=e.target.closest('.why-edit'); if(!b)return; e.stopPropagation(); const r=mbShown[+b.dataset.i]; if(r) editWhy(r);});
+
+/* filters */
+const order=['weekly','monthly','quarterly','h1','h2','annual'];
+$('#filters').innerHTML=order.map(k=>`<button data-k="${k}" class="${k===cur?'on':''}">${P[k].label}</button>`).join('')
+  +`<button data-k="custom" data-tip="Pick any two dates. The funnel and MQL/meetings tiles are summed from the real daily record, so any window works — not just the presets.">📅 Custom range</button>`;
+$('#filters').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b)return;
+  const k=b.dataset.k;
+  document.querySelectorAll('#filters button').forEach(x=>x.classList.toggle('on',x===b));
+  $('#dateRange').classList.toggle('open', k==='custom');
+  if(k==='custom'){ applyCustom(); } else { cur=k; render(); }
+});
+function applyCustom(){
+  const f=$('#dFrom').value, t=$('#dTo').value, err=$('#dErr');
+  err.textContent='';
+  if(!f||!t){ err.textContent='Pick both dates.'; return; }
+  if(f>t){ err.textContent='“From” is after “To”.'; return; }
+  if(f<DAILY.start||t>DAILY.end){ err.textContent='Daily data runs '+fmtDay(DAILY.start)+' → '+fmtDay(DAILY.end)+'.'; return; }
+  P.custom=buildCustom(f,t);
+  cur='custom';
+  render();
+}
+$('#dApply').addEventListener('click',applyCustom);
+['dFrom','dTo'].forEach(id=>$('#'+id).addEventListener('change',()=>{ if(cur==='custom') applyCustom(); }));
+
+/* events headline — summed from the board, never typed */
+(()=>{ const t=EVENTS.filter(e=>!e.notracked), h=t.reduce((s,e)=>s+(e.held||0),0), b=t.reduce((s,e)=>s+(e.booked!=null?e.booked:(e.held||0)),0);
+  $('#evTop').innerHTML=h+' <small>meetings HELD with event MQLs · 2026 <span style="opacity:.72">('+b+' booked)</span></small>'; })();
+
+
+
+$('#fSnap').textContent=fmtDay(DAILY.end); $('#fVer').textContent=fmtDay(VERIFIED);
+render(); mqlChart(); evChart(); attrChart(); campChart(); moneyBoard(); convPie();
+
+/* north star gauge: pipeline from MQLs for the selected period, against
+   TARGETS.pipelinePerMonth scaled to the period. Counts up on load, on hover,
+   and whenever the date buttons change. */
+var nsRedraw=null; /* var, not let: render() runs before this line */
+(()=>{
+  const arc=document.getElementById('nsArc'), num=document.getElementById('nsNum'), card=document.querySelector('.northstar');
+  if(!arc||!num||!card) return;
+  const ARC=298.45, DUR=1900; /* ARC = length of the r=95 half-circle */
+  let VAL=0, FILL=0, raf=null, done=null;
+  const finish=()=>{ if(raf) cancelAnimationFrame(raf); raf=null; arc.setAttribute('stroke-dashoffset','0'); num.textContent=gbp(VAL); };
+  /* keep the big number inside the arc: shrink it if the final figure is wide (e.g. £1.25M) */
+  const MAXW=112, BASE=34;
+  function fitNum(){
+    const keep=num.textContent;
+    num.setAttribute('font-size',BASE); num.textContent=gbp(VAL);
+    let w=0; try{ w=num.getComputedTextLength(); }catch(e){}
+    if(w>MAXW) num.setAttribute('font-size',(BASE*MAXW/w).toFixed(1));
+    num.textContent=keep;
+  }
+  function run(){
+    if(raf) cancelAnimationFrame(raf);
+    clearTimeout(done);
+    if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches){
+      finish(); return;
+    }
+    /* safety net: always land on the real number, even if animation frames stall */
+    done=setTimeout(finish,DUR+80);
+    const t0=performance.now();
+    function step(t){
+      const q=Math.min(1,(t-t0)/DUR), e=1-Math.pow(1-q,3);
+      arc.setAttribute('stroke-dashoffset',String(FILL*(1-e)));
+      num.textContent=gbp(Math.round(VAL*e/1000)*1000);
+      raf = q<1 ? requestAnimationFrame(step) : null;
+    }
+    raf=requestAnimationFrame(step);
+  }
+  nsRedraw=function(p){
+    const goal=Math.round(TARGETS.pipelinePerMonth*p.fm/1000)*1000;
+    const same = VAL===(p.pipeline||0) && FILL===(goal?Math.min(1,(p.pipeline||0)/goal)*ARC:0);
+    VAL=p.pipeline||0; FILL=goal?Math.min(1,VAL/goal)*ARC:0;
+    const pct=goal?Math.round(VAL/goal*100):0;
+    const set=(id,t)=>{const el=document.getElementById(id); if(el) el.textContent=t;};
+    set('nsWhen', p.custom ? 'your date range' : p.short+(p.open?' · to date':''));
+    set('nsGoal', gbp(goal)+' goal');
+    set('nsCount', gbp(VAL));
+    set('nsWay', pct+'%');
+    set('nsTarget', gbp(goal));
+    set('nsAsOf', p.open&&!p.custom ? '· '+p.elapsed+'% of the period gone' : '');
+    arc.setAttribute('stroke-dasharray',FILL.toFixed(1)+' 400');
+    fitNum();
+    /* only count up when the number changes; a redraw with the same figure just shows it */
+    if(same && !raf) finish(); else if(!same) run();
+  };
+  card.addEventListener('mouseenter',run);
+  const g=document.getElementById('nsGauge');
+  if(g) g.addEventListener('mouseenter',run);
+  nsRedraw(cur==='custom'?P.custom:P[cur]);
+})();
+</script>
+
+</body>
+</html>

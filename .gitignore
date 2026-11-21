@@ -1,0 +1,12 @@
+# Your own accounts, exports and backups never go into git
+dashboard.config.json
+inbox/*
+!inbox/README.md
+b2b/backups/
+
+# Local Claude settings
+.claude/settings.local.json
+
+# System files
+.DS_Store
+__pycache__/

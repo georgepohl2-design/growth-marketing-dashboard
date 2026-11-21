@@ -1,0 +1,49 @@
+{
+  "_readme": "Copied to dashboard.config.json during setup (Claude does this for you). dashboard.config.json is git-ignored because it describes your own accounts.",
+  "company": "Your company",
+  "currency": "GBP",
+  "year_start": "2026-01-01",
+  "sources": {
+    "crm": {
+      "tool": "hubspot",
+      "route": "connector",
+      "mql_definition": "lifecycle stage = Marketing Qualified Lead",
+      "sql_definition": "lifecycle stage = Sales Qualified Lead",
+      "files": ["inbox/crm-contacts.csv", "inbox/crm-meetings.csv", "inbox/crm-deals.csv", "inbox/crm-attribution.csv"]
+    },
+    "ga4": {
+      "route": "csv",
+      "property": "",
+      "ai_referrers": ["chatgpt.com", "perplexity.ai", "claude.ai", "gemini.google.com", "copilot.microsoft.com"],
+      "files": ["inbox/ga4-traffic.csv"]
+    },
+    "search_console": {
+      "route": "csv",
+      "site": "",
+      "brand_terms": ["yourbrand", "your brand"],
+      "files": ["inbox/gsc-dates.csv", "inbox/gsc-queries.csv"]
+    },
+    "ad_platform": {
+      "tool": "google_ads",
+      "route": "csv",
+      "files": ["inbox/ads.csv"]
+    }
+  },
+  "targets": {
+    "mqlPerMonth": 150,
+    "meetPerMonth": 40,
+    "sqlShareOfMQL": 0.10,
+    "demoPerMonth": 15,
+    "pipelinePerMonth": 475000
+  },
+  "cards": {
+    "paid":   { "show": true, "title": "Channel 1", "hint": "e.g. paid media · Google Ads", "source": "Ad platform", "goal": 30 },
+    "social": { "show": true, "title": "Channel 3", "hint": "e.g. Reddit or Spotify Ads" }
+  },
+  "refresh": {
+    "enabled": false,
+    "time": "07:00",
+    "days": "weekdays",
+    "how": "desktop scheduled task | cloud routine | cron"
+  }
+}
